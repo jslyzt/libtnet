@@ -8,8 +8,7 @@
 using namespace std;
 using namespace tnet;
 
-void onNotify(const NotifierPtr_t& notifier)
-{
+void onNotify(const NotifierPtr_t& notifier) {
     cout << "on notify" << endl;
 
     IOLoop* loop = notifier->loop();
@@ -19,15 +18,13 @@ void onNotify(const NotifierPtr_t& notifier)
     loop->stop();
 }
 
-void onTimer(const TimerPtr_t& timer, const NotifierPtr_t& notifier)
-{
+void onTimer(const TimerPtr_t& timer, const NotifierPtr_t& notifier) {
     cout << "begin to notify" << endl;
 
     notifier->notify();
 }
 
-void run(IOLoop* loop)
-{
+void run(IOLoop* loop) {
     NotifierPtr_t notifier = std::make_shared<Notifier>(std::bind(&onNotify, _1));
     TimerPtr_t timer = std::make_shared<Timer>(std::bind(&onTimer, _1, notifier), 0, 5000);
 
@@ -35,8 +32,7 @@ void run(IOLoop* loop)
     timer->start(loop);
 }
 
-int main()
-{
+int main() {
     IOLoop loop;
 
     run(&loop);

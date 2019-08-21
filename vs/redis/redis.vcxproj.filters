@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <ClCompile Include="..\..\src\redis\hiredis.c" />
+    <ClCompile Include="..\..\src\redis\redisclient.cpp" />
+    <ClCompile Include="..\..\src\redis\redisconnection.cpp" />
+    <ClCompile Include="..\..\src\redis\redistrans.cpp" />
+    <ClCompile Include="..\..\src\redis\sds.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\redis\hiredis.h" />
+    <ClInclude Include="..\..\src\redis\redisclient.h" />
+    <ClInclude Include="..\..\src\redis\redisconnection.h" />
+    <ClInclude Include="..\..\src\redis\redistrans.h" />
+    <ClInclude Include="..\..\src\redis\sds.h" />
+    <ClInclude Include="..\..\src\redis\tnet_redis.h" />
+  </ItemGroup>
+</Project>

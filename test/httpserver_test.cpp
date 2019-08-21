@@ -20,15 +20,14 @@ using namespace tnet;
 using namespace std::placeholders;
 
 
-void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request)
-{
+void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
     HttpResponse resp;
     resp.statusCode = 200;
     resp.setContentType("text/html");
     resp.setKeepAlive(true);
     resp.enableDate();
-   
-    resp.body.append("first"); 
+
+    resp.body.append("first");
     //resp.body.append(1600, 'a');
     resp.body.append("Hello World");
 
@@ -36,10 +35,9 @@ void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request)
 }
 
 
-int main()
-{
+int main() {
     Log::rootLog().setLevel(Log::ERROR);
-    
+
     TcpServer s;
 
     HttpServer httpd(&s);
@@ -55,6 +53,6 @@ int main()
     LOG_INFO("stop server");
 
     return 0;
-} 
+}
 
 

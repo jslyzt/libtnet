@@ -10,23 +10,20 @@
 using namespace std;
 using namespace tnet;
 
-void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* context)
-{
-    switch(event)
-    {
+void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* context) {
+    switch (event) {
         case Ws_OpenEvent:
             LOG_INFO("websocket open");
-            break;    
+            break;
         case Ws_CloseEvent:
             LOG_INFO("websocket close");
             break;
-        case Ws_MessageEvent:
-            {
-                const string& str = *(const string*)context;
-                LOG_INFO("websocket message %s", str.c_str());
-                conn->send("hello " + str);
-            }
-            break;
+        case Ws_MessageEvent: {
+            const string& str = *(const string*)context;
+            LOG_INFO("websocket message %s", str.c_str());
+            conn->send("hello " + str);
+        }
+        break;
         case Ws_PongEvent:
             LOG_INFO("websocket pong");
             break;
@@ -36,18 +33,17 @@ void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* cont
     }
 }
 
-int main()
-{
+int main() {
     TcpServer s;
-    
+
     HttpServer httpd(&s);
-    
-    httpd.setWsCallback("/push/ws", std::bind(&onWsCallback, _1, _2, _3));    
+
+    httpd.setWsCallback("/push/ws", std::bind(&onWsCallback, _1, _2, _3));
 
     httpd.listen(Address(11181));
 
     s.start();
-    
-    return 0; 
+
+    return 0;
 }
 

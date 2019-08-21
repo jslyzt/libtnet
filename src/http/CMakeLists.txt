@@ -1,6 +1,6 @@
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
-set (SRCS
+set(SRCS
     http_parser.c
     httpclient.cpp
     httpconnection.cpp
@@ -13,20 +13,20 @@ set (SRCS
     wsclient.cpp
     wsconnection.cpp
     wsutil.cpp
-    )
+   )
 
-add_definitions(-DHTTP_PARSER_STRICT=0)
+add_definitions(-DHTTP_PARSER_STRICT = 0)
 
-include_directories(../)
+include_directories(.. /)
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(LIBRARY_OUTPUT_PATH $ {CMAKE_BINARY_DIR} / lib)
 
-add_library(tnet_http ${SRCS})
+add_library(tnet_http $ {SRCS})
 target_link_libraries(tnet_http tnet)
 
 install(TARGETS tnet_http DESTINATION lib)
 
-set (HEADERS
+set(HEADERS
     httpclient.h
     httpconnection.h
     http_parser.h
@@ -38,7 +38,7 @@ set (HEADERS
     tnet_http.h
     wsclient.h
     wsconnection.h
-    )
+   )
 
-install(FILES ${HEADERS} DESTINATION include/tnet/http)
-   
+install(FILES $ {HEADERS} DESTINATION include / tnet / http)
+

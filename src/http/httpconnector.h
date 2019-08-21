@@ -5,45 +5,43 @@
 #include "httpresponse.h"
 #include "connector.h"
 
-namespace tnet
-{
+namespace tnet {
 
-    class HttpConnector : public HttpParser
-                        , public Connector<HttpConnector>
-    {
-    public:
-        friend class HttpClient;
-        friend class WsClient;
-        friend class Connector<HttpConnector>;
+class HttpConnector : public HttpParser
+    , public Connector<HttpConnector> {
+public:
+    friend class HttpClient;
+    friend class WsClient;
+    friend class Connector<HttpConnector>;
 
-        typedef std::function<void (const HttpConnectorPtr_t&, const HttpResponse&, ResponseEvent)> ResponseCallback_t; 
-        
-        HttpConnector();
-        ~HttpConnector();
+    typedef std::function<void (const HttpConnectorPtr_t&, const HttpResponse&, ResponseEvent)> ResponseCallback_t;
 
-        void setCallback(const ResponseCallback_t& callback) { m_callback = callback; }
-        void clearCallback();
+    HttpConnector();
+    ~HttpConnector();
 
-        static void setMaxHeaderSize(size_t size) { ms_maxHeaderSize = size; }
-        static void setMaxBodySize(size_t size) { ms_maxBodySize = size; }
-        
-    private:
-        void handleRead(const char* buffer, size_t count);
+    void setCallback(const ResponseCallback_t& callback) { m_callback = callback; }
+    void clearCallback();
 
-        int onMessageBegin();
-        int onHeader(const std::string& field, const std::string& value);
-        int onHeadersComplete();
-        int onBody(const char* at, size_t length);
-        int onMessageComplete();
-        int onError(const HttpError& error);
+    static void setMaxHeaderSize(size_t size) { ms_maxHeaderSize = size; }
+    static void setMaxBodySize(size_t size) { ms_maxBodySize = size; }
 
-    private:
-        HttpResponse m_response;    
+private:
+    void handleRead(const char* buffer, size_t count);
 
-        ResponseCallback_t m_callback;
+    int onMessageBegin();
+    int onHeader(const std::string& field, const std::string& value);
+    int onHeadersComplete();
+    int onBody(const char* at, size_t length);
+    int onMessageComplete();
+    int onError(const HttpError& error);
 
-        static size_t ms_maxHeaderSize;
-        static size_t ms_maxBodySize;
-    };
-    
+private:
+    HttpResponse m_response;
+
+    ResponseCallback_t m_callback;
+
+    static size_t ms_maxHeaderSize;
+    static size_t ms_maxBodySize;
+};
+
 }

@@ -2,33 +2,31 @@
 
 #include "tnet.h"
 
-namespace tnet
-{
-    class IOLoop;
-    class Address;
+namespace tnet {
+class IOLoop;
+class Address;
 
-    class Acceptor : public nocopyable
-    {
-    public:
-        Acceptor(const NewConnCallback_t& callback);
-        ~Acceptor();
-    
-        int listen(const Address& addr);
+class Acceptor : public nocopyable {
+public:
+    Acceptor(const NewConnCallback_t& callback);
+    ~Acceptor();
 
-        void start(IOLoop* loop);
-        void stop();
+    int listen(const Address& addr);
 
-    private:
-        void onAccept(IOLoop*, int);
+    void start(IOLoop* loop);
+    void stop();
 
-    private:
-        IOLoop* m_loop;
-        
-        int m_sockFd;
-        int m_dummyFd;    
-   
-        bool m_running;
-    
-        NewConnCallback_t m_callback; 
-    };   
+private:
+    void onAccept(IOLoop*, int);
+
+private:
+    IOLoop* m_loop;
+
+    int m_sockFd;
+    int m_dummyFd;
+
+    bool m_running;
+
+    NewConnCallback_t m_callback;
+};
 }

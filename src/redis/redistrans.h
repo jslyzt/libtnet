@@ -6,44 +6,42 @@
 
 #include "tnet_redis.h"
 
-namespace tnet
-{
+namespace tnet {
 
-    class RedisTrans : public nocopyable
-                     , public std::enable_shared_from_this<RedisTrans>
-    {
-    public:
-        friend class RedisClient;
+class RedisTrans : public nocopyable
+    , public std::enable_shared_from_this<RedisTrans> {
+public:
+    friend class RedisClient;
 
-        RedisTrans(const RedisClientPtr_t& client, const RedisConnectionPtr_t& conn);
-        ~RedisTrans();
+    RedisTrans(const RedisClientPtr_t& client, const RedisConnectionPtr_t& conn);
+    ~RedisTrans();
 
-        void begin();
-        
-        void exec(std::initializer_list<std::string> cmd);
+    void begin();
 
-        void commit(const ReplyCallback_t& callback);
-        void cancel(const ReplyCallback_t& callback); 
+    void exec(std::initializer_list<std::string> cmd);
 
-    private:
-        void onReply(const RedisConnectionPtr_t& conn, const RedisReply& reply);
-        void onConnect(const RedisConnectionPtr_t& conn, int status, const NewTransCallback_t& callback);
+    void commit(const ReplyCallback_t& callback);
+    void cancel(const ReplyCallback_t& callback);
 
-        void onCommit(const RedisReply& reply, const ReplyCallback_t& callback);
-        void onCancel(const RedisReply& reply, const ReplyCallback_t& callback);
+private:
+    void onReply(const RedisConnectionPtr_t& conn, const RedisReply& reply);
+    void onConnect(const RedisConnectionPtr_t& conn, int status, const NewTransCallback_t& callback);
 
-        void request(std::initializer_list<std::string> cmd);
-    
-    private:
-        WeakRedisClientPtr_t m_client;
+    void onCommit(const RedisReply& reply, const ReplyCallback_t& callback);
+    void onCancel(const RedisReply& reply, const ReplyCallback_t& callback);
 
-        WeakRedisConnectionPtr_t m_conn;
-    
-        ReplyCallback_t m_callback;
+    void request(std::initializer_list<std::string> cmd);
 
-        int m_transNum;
+private:
+    WeakRedisClientPtr_t m_client;
 
-        bool m_inTrans;
-    };
+    WeakRedisConnectionPtr_t m_conn;
+
+    ReplyCallback_t m_callback;
+
+    int m_transNum;
+
+    bool m_inTrans;
+};
 
 }

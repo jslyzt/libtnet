@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="12.0">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\acceptor.cpp" />
+    <ClCompile Include="..\..\src\address.cpp" />
+    <ClCompile Include="..\..\src\connection.cpp" />
+    <ClCompile Include="..\..\src\http\httpclient.cpp" />
+    <ClCompile Include="..\..\src\http\httpconnection.cpp" />
+    <ClCompile Include="..\..\src\http\httpconnector.cpp" />
+    <ClCompile Include="..\..\src\http\httpparser.cpp" />
+    <ClCompile Include="..\..\src\http\httprequest.cpp" />
+    <ClCompile Include="..\..\src\http\httpresponse.cpp" />
+    <ClCompile Include="..\..\src\http\httpserver.cpp" />
+    <ClCompile Include="..\..\src\http\httputil.cpp" />
+    <ClCompile Include="..\..\src\http\http_parser.c" />
+    <ClCompile Include="..\..\src\http\wsclient.cpp" />
+    <ClCompile Include="..\..\src\http\wsconnection.cpp" />
+    <ClCompile Include="..\..\src\http\wsutil.cpp" />
+    <ClCompile Include="..\..\src\ioloop.cpp" />
+    <ClCompile Include="..\..\src\log.cpp" />
+    <ClCompile Include="..\..\src\notifier.cpp" />
+    <ClCompile Include="..\..\src\poller.cpp" />
+    <ClCompile Include="..\..\src\process.cpp" />
+    <ClCompile Include="..\..\src\signaler.cpp" />
+    <ClCompile Include="..\..\src\sockutil.cpp" />
+    <ClCompile Include="..\..\src\stringutil.cpp" />
+    <ClCompile Include="..\..\src\tcpserver.cpp" />
+    <ClCompile Include="..\..\src\timer.cpp" />
+    <ClCompile Include="..\..\src\timingwheel.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\acceptor.h" />
+    <ClInclude Include="..\..\src\address.h" />
+    <ClInclude Include="..\..\src\connection.h" />
+    <ClInclude Include="..\..\src\connector.h" />
+    <ClInclude Include="..\..\src\http\httpclient.h" />
+    <ClInclude Include="..\..\src\http\httpconnection.h" />
+    <ClInclude Include="..\..\src\http\httpconnector.h" />
+    <ClInclude Include="..\..\src\http\httpparser.h" />
+    <ClInclude Include="..\..\src\http\httprequest.h" />
+    <ClInclude Include="..\..\src\http\httpresponse.h" />
+    <ClInclude Include="..\..\src\http\httpserver.h" />
+    <ClInclude Include="..\..\src\http\httputil.h" />
+    <ClInclude Include="..\..\src\http\http_parser.h" />
+    <ClInclude Include="..\..\src\http\tnet_http.h" />
+    <ClInclude Include="..\..\src\http\wsclient.h" />
+    <ClInclude Include="..\..\src\http\wsconnection.h" />
+    <ClInclude Include="..\..\src\http\wsutil.h" />
+    <ClInclude Include="..\..\src\ioevent.h" />
+    <ClInclude Include="..\..\src\ioloop.h" />
+    <ClInclude Include="..\..\src\log.h" />
+    <ClInclude Include="..\..\src\nocopyable.h" />
+    <ClInclude Include="..\..\src\notifier.h" />
+    <ClInclude Include="..\..\src\poller.h" />
+    <ClInclude Include="..\..\src\process.h" />
+    <ClInclude Include="..\..\src\signaler.h" />
+    <ClInclude Include="..\..\src\sockutil.h" />
+    <ClInclude Include="..\..\src\spinlock.h" />
+    <ClInclude Include="..\..\src\stringutil.h" />
+    <ClInclude Include="..\..\src\tcpserver.h" />
+    <ClInclude Include="..\..\src\timer.h" />
+    <ClInclude Include="..\..\src\timingwheel.h" />
+    <ClInclude Include="..\..\src\tnet.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\connector.inl" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SearchLib</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelTBB>true</UseIntelTBB>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelTBB>true</UseIntelTBB>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\src\http;$(SolutionDir)..\src\polarssl;$(SolutionDir)..\src\redis</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src;$(SolutionDir)..\src\http;$(SolutionDir)..\src\polarssl;$(SolutionDir)..\src\redis</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

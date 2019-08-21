@@ -11,40 +11,38 @@ extern "C"
 
 #include "tnet_http.h"
 
-namespace tnet
-{
-    class HttpRequest
-    {
-    public:
-        HttpRequest();
-        ~HttpRequest();
+namespace tnet {
+class HttpRequest {
+public:
+    HttpRequest();
+    ~HttpRequest();
 
-        void clear();
-        void parseUrl();
-        std::string dump();
+    void clear();
+    void parseUrl();
+    std::string dump();
 
-        std::string url;
-        std::string body;
+    std::string url;
+    std::string body;
 
-        std::string schema;
-        
-        std::string host;
-        std::string path;
-        std::string query;
+    std::string schema;
 
-        Headers_t headers;
+    std::string host;
+    std::string path;
+    std::string query;
 
-        Params_t params;
-        
-        unsigned short majorVersion;
-        unsigned short minorVersion;
+    Headers_t headers;
 
-        http_method method;
+    Params_t params;
 
-        uint16_t port;
+    unsigned short majorVersion;
+    unsigned short minorVersion;
 
-        void parseQuery();
-    };
-        
+    http_method method;
+
+    uint16_t port;
+
+    void parseQuery();
+};
+
 }
 

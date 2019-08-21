@@ -1,1 +1,10 @@
 build
+*.user
+*.suo
+*.sdf
+*.opensdf
+/vs/lib/x64
+/vs/redis/x64
+/vs/polarssl/x64
+/vs/bin
+/vs/test/x64

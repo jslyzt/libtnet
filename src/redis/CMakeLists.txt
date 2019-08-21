@@ -1,28 +1,28 @@
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
-set (SRCS
+set(SRCS
     hiredis.c
     redisclient.cpp
     redisconnection.cpp
     redistrans.cpp
     sds.c
-    )
+   )
 
-include_directories(../)
+include_directories(.. /)
 
-set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+set(LIBRARY_OUTPUT_PATH $ {CMAKE_BINARY_DIR} / lib)
 
-add_library(tnet_redis ${SRCS})
+add_library(tnet_redis $ {SRCS})
 target_link_libraries(tnet_redis tnet)
 
 install(TARGETS tnet_redis DESTINATION lib)
 
-set (HEADERS
+set(HEADERS
     hiredis.h
     redisclient.h
     redistrans.h
     tnet_redis.h
-    )
+   )
 
-install(FILES ${HEADERS} DESTINATION include/tnet/redis)
-   
+install(FILES $ {HEADERS} DESTINATION include / tnet / redis)
+

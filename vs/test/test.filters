@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{25d902c2-4283-ab8c-fbac-54dfa101ad31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\main">
+      <UniqueIdentifier>{312affd7-6124-2dec-b6da-12825da2ef60}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup /><ItemGroup>
+    <ClCompile Include="..\..\Src\Main\SearchServerMain.cpp">
+      <Filter>src\main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  </Project>

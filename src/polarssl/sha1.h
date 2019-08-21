@@ -41,8 +41,7 @@ typedef UINT32 uint32_t;
 /**
  * \brief          SHA-1 context structure
  */
-typedef struct
-{
+typedef struct {
     uint32_t total[2];          /*!< number of bytes processed  */
     uint32_t state[5];          /*!< intermediate digest state  */
     unsigned char buffer[64];   /*!< data block being processed */
@@ -61,7 +60,7 @@ extern "C" {
  *
  * \param ctx      context to be initialized
  */
-void sha1_starts( sha1_context *ctx );
+void sha1_starts(sha1_context* ctx);
 
 /**
  * \brief          SHA-1 process buffer
@@ -70,7 +69,7 @@ void sha1_starts( sha1_context *ctx );
  * \param input    buffer holding the  data
  * \param ilen     length of the input data
  */
-void sha1_update( sha1_context *ctx, const unsigned char *input, size_t ilen );
+void sha1_update(sha1_context* ctx, const unsigned char* input, size_t ilen);
 
 /**
  * \brief          SHA-1 final digest
@@ -78,7 +77,7 @@ void sha1_update( sha1_context *ctx, const unsigned char *input, size_t ilen );
  * \param ctx      SHA-1 context
  * \param output   SHA-1 checksum result
  */
-void sha1_finish( sha1_context *ctx, unsigned char output[20] );
+void sha1_finish(sha1_context* ctx, unsigned char output[20]);
 
 /**
  * \brief          Output = SHA-1( input buffer )
@@ -87,7 +86,7 @@ void sha1_finish( sha1_context *ctx, unsigned char output[20] );
  * \param ilen     length of the input data
  * \param output   SHA-1 checksum result
  */
-void sha1( const unsigned char *input, size_t ilen, unsigned char output[20] );
+void sha1(const unsigned char* input, size_t ilen, unsigned char output[20]);
 
 /**
  * \brief          Output = SHA-1( file contents )
@@ -97,7 +96,7 @@ void sha1( const unsigned char *input, size_t ilen, unsigned char output[20] );
  *
  * \return         0 if successful, or POLARSSL_ERR_SHA1_FILE_IO_ERROR
  */
-int sha1_file( const char *path, unsigned char output[20] );
+int sha1_file(const char* path, unsigned char output[20]);
 
 /**
  * \brief          SHA-1 HMAC context setup
@@ -106,7 +105,7 @@ int sha1_file( const char *path, unsigned char output[20] );
  * \param key      HMAC secret key
  * \param keylen   length of the HMAC key
  */
-void sha1_hmac_starts( sha1_context *ctx, const unsigned char *key, size_t keylen );
+void sha1_hmac_starts(sha1_context* ctx, const unsigned char* key, size_t keylen);
 
 /**
  * \brief          SHA-1 HMAC process buffer
@@ -115,7 +114,7 @@ void sha1_hmac_starts( sha1_context *ctx, const unsigned char *key, size_t keyle
  * \param input    buffer holding the  data
  * \param ilen     length of the input data
  */
-void sha1_hmac_update( sha1_context *ctx, const unsigned char *input, size_t ilen );
+void sha1_hmac_update(sha1_context* ctx, const unsigned char* input, size_t ilen);
 
 /**
  * \brief          SHA-1 HMAC final digest
@@ -123,14 +122,14 @@ void sha1_hmac_update( sha1_context *ctx, const unsigned char *input, size_t ile
  * \param ctx      HMAC context
  * \param output   SHA-1 HMAC checksum result
  */
-void sha1_hmac_finish( sha1_context *ctx, unsigned char output[20] );
+void sha1_hmac_finish(sha1_context* ctx, unsigned char output[20]);
 
 /**
  * \brief          SHA-1 HMAC context reset
  *
  * \param ctx      HMAC context to be reset
  */
-void sha1_hmac_reset( sha1_context *ctx );
+void sha1_hmac_reset(sha1_context* ctx);
 
 /**
  * \brief          Output = HMAC-SHA-1( hmac key, input buffer )
@@ -141,19 +140,19 @@ void sha1_hmac_reset( sha1_context *ctx );
  * \param ilen     length of the input data
  * \param output   HMAC-SHA-1 result
  */
-void sha1_hmac( const unsigned char *key, size_t keylen,
-                const unsigned char *input, size_t ilen,
-                unsigned char output[20] );
+void sha1_hmac(const unsigned char* key, size_t keylen,
+               const unsigned char* input, size_t ilen,
+               unsigned char output[20]);
 
 /**
  * \brief          Checkup routine
  *
  * \return         0 if successful, or 1 if the test failed
  */
-int sha1_self_test( int verbose );
+int sha1_self_test(int verbose);
 
 /* Internal use */
-void sha1_process( sha1_context *ctx, const unsigned char data[64] );
+void sha1_process(sha1_context* ctx, const unsigned char data[64]);
 
 #ifdef __cplusplus
 }

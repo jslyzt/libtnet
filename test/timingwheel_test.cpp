@@ -9,32 +9,27 @@ using namespace tnet;
 
 int i = 0;
 
-void onWheel(const TimingWheelPtr_t& wheel, int num)
-{
+void onWheel(const TimingWheelPtr_t& wheel, int num) {
     i++;
-    
+
     cout << i << "\t" << num << "\t" << "onwheel\t" << time(0) << endl;
     uint64_t h = wheel->add(std::bind(&onWheel, _1, num), num * 1000);
-    
-    if(i == 5)
-    {
+
+    if (i == 5) {
         wheel->update(h, num * 1000);
     }
 
-    if(i == 6)
-    {
+    if (i == 6) {
         wheel->remove(h);
         wheel->add(std::bind(&onWheel, _1, num), num * 1000);
     }
 
-    if(i > 10)
-    {
+    if (i > 10) {
         wheel->loop()->stop();
     }
 }
 
-int main()
-{
+int main() {
     IOLoop loop;
 
     TimingWheelPtr_t t = std::make_shared<TimingWheel>(1000, 20);
