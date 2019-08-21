@@ -2,15 +2,24 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <unistd.h>
 #include <time.h>
 #include <string.h>
 
 namespace tnet {
-__thread char errnoMsgBuf[1024];
+
+#ifdef WIN32
+    __declspec (thread) char errnoMsgBuf[1024];
+#else
+    __thread char errnoMsgBuf[1024];
+#endif
 
 const char* errorMsg(int code) {
+#ifdef WIN32
+    strerror_s(errnoMsgBuf, sizeof(errnoMsgBuf), code);
+    return errnoMsgBuf;
+#else
     return strerror_r(code, errnoMsgBuf, sizeof(errnoMsgBuf));
+#endif
 }
 
 static int MaxLogMsg = 1024;
@@ -27,8 +36,6 @@ static const char* LevelMsg[] = {"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FAT
         va_end(ap);\
         log(LevelMsg[int(level)], file, function, line, msg);\
     }
-
-
 
 static const char* DateTimeFormat = "%Y-%m-%d %H:%M:%S";
 

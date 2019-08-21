@@ -94,7 +94,7 @@ void Signaler::onSignal(IOLoop* loop, int events) {
     SignalerPtr_t signaler = shared_from_this();
 
     struct signalfd_siginfo fdsi;
-    ssize_t s = read(m_fd, &fdsi, sizeof(fdsi));
+    int s = read(m_fd, &fdsi, sizeof(fdsi));
     if (s != sizeof(fdsi)) {
         LOG_ERROR("onSignal read error");
         return;

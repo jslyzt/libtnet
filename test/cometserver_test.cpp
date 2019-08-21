@@ -44,7 +44,7 @@ void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
 }
 
 int main() {
-    Log::rootLog().setLevel(Log::ERROR);
+    Log::rootLog().setLevel(Log::Error);
 
     TcpServer s;
 

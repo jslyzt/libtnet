@@ -18,11 +18,9 @@ HttpResponse::HttpResponse(int code, const Headers_t& headers, const string& bod
     : statusCode(code)
     , body(body)
     , headers(headers) {
-
 }
 
 HttpResponse::~HttpResponse() {
-
 }
 
 string HttpResponse::dump() {
@@ -69,7 +67,11 @@ void HttpResponse::setKeepAlive(bool on) {
 void HttpResponse::enableDate() {
     time_t now = time(NULL);
     struct tm t;
+#ifndef WIN32
     gmtime_r(&now, &t);
+#else
+    t = *gmtime(&now);
+#endif
     char buf[128];
     int n = strftime(buf, sizeof buf, "%a, %d %b %Y %H:%M:%S %Z", &t);
     static const string DateKey = "Date";

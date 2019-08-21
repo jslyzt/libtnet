@@ -73,9 +73,9 @@ void WsConnection::onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, con
     ret = func(data + readLen, count - readLen); \
     readLen += (ret > 0 ? ret : 0);
 
-ssize_t WsConnection::onRead(const ConnectionPtr_t& conn, const char* data, size_t count) {
+int WsConnection::onRead(const ConnectionPtr_t& conn, const char* data, size_t count) {
     size_t readLen = 0;
-    ssize_t ret = 1;
+    int ret = 1;
 
     while (readLen < count && ret > 0) {
         switch (m_status) {
@@ -123,7 +123,7 @@ ssize_t WsConnection::onRead(const ConnectionPtr_t& conn, const char* data, size
     return ret;
 }
 
-ssize_t WsConnection::onFrameStart(const char* data, size_t count) {
+int WsConnection::onFrameStart(const char* data, size_t count) {
     m_cache.clear();
 
     char header = data[0];
@@ -140,7 +140,7 @@ ssize_t WsConnection::onFrameStart(const char* data, size_t count) {
     return 1;
 }
 
-ssize_t WsConnection::handleFramePayloadLen(size_t payloadLen) {
+int WsConnection::handleFramePayloadLen(size_t payloadLen) {
     m_payloadLen = payloadLen;
 
     m_cache.reserve(payloadLen);
@@ -154,7 +154,7 @@ ssize_t WsConnection::handleFramePayloadLen(size_t payloadLen) {
     return 0;
 }
 
-ssize_t WsConnection::onFramePayloadLen(const char* data, size_t count) {
+int WsConnection::onFramePayloadLen(const char* data, size_t count) {
     uint8_t payloadLen = (uint8_t)data[0];
 
     m_mask = payloadLen & 0x80;
@@ -179,7 +179,7 @@ ssize_t WsConnection::onFramePayloadLen(const char* data, size_t count) {
     return 1;
 }
 
-ssize_t WsConnection::tryRead(const char* data, size_t count, size_t tryReadData) {
+int WsConnection::tryRead(const char* data, size_t count, size_t tryReadData) {
     assert(m_cache.size() < tryReadData);
     size_t pendingSize = m_cache.size();
     if (pendingSize + count < tryReadData) {
@@ -192,8 +192,8 @@ ssize_t WsConnection::tryRead(const char* data, size_t count, size_t tryReadData
     return tryReadData - pendingSize;
 }
 
-ssize_t WsConnection::onFramePayloadLen16(const char* data, size_t count) {
-    ssize_t readLen = tryRead(data, count, 2);
+int WsConnection::onFramePayloadLen16(const char* data, size_t count) {
+    int readLen = tryRead(data, count, 2);
     if (readLen == 0) {
         return readLen;
     }
@@ -212,8 +212,8 @@ ssize_t WsConnection::onFramePayloadLen16(const char* data, size_t count) {
     return readLen;
 }
 
-ssize_t WsConnection::onFramePayloadLen64(const char* data, size_t count) {
-    ssize_t readLen = tryRead(data, count, 8);
+int WsConnection::onFramePayloadLen64(const char* data, size_t count) {
+    int readLen = tryRead(data, count, 8);
     if (readLen == 0) {
         return readLen;
     }
@@ -233,8 +233,8 @@ ssize_t WsConnection::onFramePayloadLen64(const char* data, size_t count) {
     return readLen;
 }
 
-ssize_t WsConnection::onFrameMaskingKey(const char* data, size_t count) {
-    ssize_t readLen = tryRead(data, count, 4);
+int WsConnection::onFrameMaskingKey(const char* data, size_t count) {
+    int readLen = tryRead(data, count, 4);
     if (readLen == 0) {
         return 0;
     }
@@ -248,8 +248,8 @@ ssize_t WsConnection::onFrameMaskingKey(const char* data, size_t count) {
     return readLen;
 }
 
-ssize_t WsConnection::onFrameData(const char* data, size_t count) {
-    ssize_t readLen = tryRead(data, count, m_payloadLen);
+int WsConnection::onFrameData(const char* data, size_t count) {
+    int readLen = tryRead(data, count, m_payloadLen);
 
     if (readLen == 0) {
         return 0;
@@ -265,7 +265,7 @@ ssize_t WsConnection::onFrameData(const char* data, size_t count) {
     return readLen;
 }
 
-ssize_t WsConnection::handleFrameData(const ConnectionPtr_t& conn) {
+int WsConnection::handleFrameData(const ConnectionPtr_t& conn) {
     uint8_t opcode = m_opcode;
     string data = m_cache;
 
@@ -317,7 +317,7 @@ ssize_t WsConnection::handleFrameData(const ConnectionPtr_t& conn) {
     return 0;
 }
 
-ssize_t WsConnection::handleMessage(const ConnectionPtr_t& conn, uint8_t opcode, const string& data) {
+int WsConnection::handleMessage(const ConnectionPtr_t& conn, uint8_t opcode, const string& data) {
     switch (opcode) {
         case 0x1:
             //utf-8 data

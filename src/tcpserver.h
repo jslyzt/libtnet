@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <set>
-#include <unistd.h>
 
 #include "tnet.h"
 
@@ -49,7 +48,6 @@ private:
     int m_maxIdleTimeout;
     TimingWheelPtr_t m_idleWheel;
 
-    std::set<pid_t> m_workers;
     size_t m_workerNum;
 
     bool m_workerProc;

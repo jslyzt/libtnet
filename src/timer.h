@@ -2,12 +2,16 @@
 
 #include "tnet.h"
 
+#ifdef WIN32
+#define timespec timeval
+#define CLOCK_MONOTONIC 0
+#endif
+
 namespace tnet {
 class IOLoop;
 class Timer : public nocopyable
     , public std::enable_shared_from_this<Timer> {
 public:
-    //repeat and after are all milliseconds
     Timer(const TimerHandler_t& handler, int repeat, int after);
     ~Timer();
 
@@ -22,9 +26,14 @@ public:
 
     bool isRepeated() { return m_repeated; }
 
-private:
+#ifdef WIN32
+    static LARGE_INTEGER getFILETIMEoffset();
+    static int clock_gettime(int X, struct timeval* tv);
+#endif
+
     void onTimer(IOLoop* loop, int events);
 
+private:
     void initTimer(int repeat, int after);
 
 private:

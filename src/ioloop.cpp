@@ -131,8 +131,7 @@ void onTimerHandler(const TimerPtr_t& timer, const Callback_t& callback) {
 }
 
 TimerPtr_t IOLoop::runAfter(int after, const Callback_t& callback) {
-    TimerPtr_t timer = std::make_shared<Timer>(
-                           std::bind(&onTimerHandler, _1, callback), after, 0);
+    TimerPtr_t timer = std::make_shared<Timer>(std::bind(&onTimerHandler, _1, callback), after, 0);
     timer->start(this);
     return timer;
 }
@@ -140,10 +139,8 @@ TimerPtr_t IOLoop::runAfter(int after, const Callback_t& callback) {
 void IOLoop::addCallback(const Callback_t& callback) {
     {
         SpinLockGuard g(m_lock);
-
         m_callbacks.push_back(callback);
     }
-
     m_notifier->notify();
 }
 

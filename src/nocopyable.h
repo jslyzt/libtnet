@@ -1,5 +1,4 @@
-#ifndef _NOCOPYABLE_H_
-#define _NOCOPYABLE_H_
+#pragma once
 
 namespace tnet {
 
@@ -13,5 +12,3 @@ private:
 };
 
 }
-
-#endif

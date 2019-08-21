@@ -9,7 +9,6 @@ public:
         : fd(fd_)
         , events(events_)
         , handler(handler_) {
-
     }
 
     int fd;

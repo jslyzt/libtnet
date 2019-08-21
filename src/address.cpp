@@ -1,7 +1,9 @@
 #include "address.h"
-
 #include <string.h>
-#include <arpa/inet.h>
+
+#ifdef WIN32
+#define bzero(a, b) memset(a, 0, b)
+#endif
 
 #include "sockutil.h"
 #include "log.h"
@@ -48,7 +50,6 @@ uint32_t Address::ip() const {
 string Address::ipstr() const {
     char buf[32] = {'\0'};
     inet_ntop(AF_INET, &m_addr.sin_addr, buf, static_cast<socklen_t>(sizeof(buf)));
-
     return string(buf, 32);
 }
 

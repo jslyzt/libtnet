@@ -14,13 +14,11 @@ using namespace std;
 
 namespace tnet {
 static void dummyCallback(const RedisConnectionPtr_t&, const RedisReply&) {
-
 }
 
 RedisConnection::RedisConnection()
     : Connector<RedisConnection>() {
     m_callback = std::bind(&dummyCallback, _1, _2);
-
     m_context = redisContextInit();
 }
 
@@ -132,6 +130,5 @@ void RedisConnection::onAuth(const RedisConnectionPtr_t& conn, const RedisReply&
     } else {
         cb(shared_from_this(), 0);
     }
-
 }
 }

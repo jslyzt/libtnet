@@ -3,9 +3,13 @@
 #include <time.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <assert.h>
+
+#ifndef WIN32
 #include <sys/socket.h>
 #include <sys/uio.h>
-#include <assert.h>
+#endif
+
 #include "ioloop.h"
 #include "log.h"
 #include "sockutil.h"
@@ -13,11 +17,11 @@
 using namespace std;
 
 namespace tnet {
+
 void dummyConnEvent(const ConnectionPtr_t&, ConnEvent, const void*) {
 }
 
 const int MaxReadBuffer = 4096;
-
 Connection::Connection(IOLoop* loop, int fd)
     : m_loop(loop)
     , m_fd(fd)
@@ -37,7 +41,6 @@ void Connection::clearEventCallback() {
 void Connection::updateActiveTime() {
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC, &t);
-
     m_lastActiveTime = t.tv_sec;
 }
 
@@ -198,7 +201,7 @@ void Connection::handleWrite(const string& data) {
     iov[1].iov_base = (void*)data.data();
     iov[1].iov_len = data.size();
 
-    ssize_t n = writev(m_fd, iov, niov);
+    int n = writev(m_fd, iov, niov);
     if (n == totalSize) {
         string().swap(m_sendBuffer);
 

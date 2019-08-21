@@ -9,7 +9,13 @@
 using namespace std::placeholders;
 
 namespace tnet {
+
 #define TNET_VERSION "0.1"
+
+#ifdef WIN32
+#define snprintf _snprintf
+#define strcasecmp _stricmp
+#endif
 
 class IOLoop;
 class Acceptor;

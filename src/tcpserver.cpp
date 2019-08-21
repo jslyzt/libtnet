@@ -31,11 +31,8 @@ void dummyRunCallback(IOLoop*) {
 TcpServer::TcpServer()
     : m_loop(0) {
     m_process = std::make_shared<Process>();
-
     m_running = false;
-
     m_maxIdleTimeout = defaultIdleTimeout;
-
     m_runCallback = std::bind(&dummyRunCallback, _1);
 }
 
@@ -63,20 +60,15 @@ void TcpServer::run() {
     }
 
     m_loop = new IOLoop();
-
     m_running = true;
-
-
     m_loop->addCallback(std::bind(&TcpServer::onRun, this));
-
     m_loop->start();
 }
 
 void TcpServer::onRun() {
     LOG_INFO("tcp server on run");
 
-    for_each(m_acceptors.begin(), m_acceptors.end(),
-             std::bind(&Acceptor::start, _1, m_loop));
+    for_each(m_acceptors.begin(), m_acceptors.end(), std::bind(&Acceptor::start, _1, m_loop));
 
     vector<int> signums{SIGINT, SIGTERM};
     m_signaler = std::make_shared<Signaler>(signums, std::bind(&TcpServer::onSignal, this, _1, _2));

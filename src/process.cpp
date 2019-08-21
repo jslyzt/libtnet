@@ -85,7 +85,7 @@ void Process::stop() {
 
 void Process::checkStop() {
     struct signalfd_siginfo fdsi;
-    ssize_t s = read(m_fd, &fdsi, sizeof(fdsi));
+    int s = read(m_fd, &fdsi, sizeof(fdsi));
 
     if (s != sizeof(fdsi)) {
         //no signal,

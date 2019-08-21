@@ -44,7 +44,7 @@ private:
     void onOpen(const void* context);
     void onError();
 
-    ssize_t onRead(const ConnectionPtr_t& conn, const char* data, size_t count);
+    int onRead(const ConnectionPtr_t& conn, const char* data, size_t count);
 
     bool isFinalFrame() { return m_final; }
     bool isMaskFrame() { return m_mask; }
@@ -52,18 +52,18 @@ private:
     bool isTextFrame() { return (m_opcode == 0) ? (m_lastOpcode == 0x1) : (m_opcode == 0x1); }
     bool isBinaryFrame() { return (m_opcode == 0) ? (m_lastOpcode == 0x2) : (m_opcode == 0x2); }
 
-    ssize_t onFrameStart(const char* data, size_t count);
-    ssize_t onFramePayloadLen(const char* data, size_t count);
-    ssize_t onFramePayloadLen16(const char* data, size_t count);
-    ssize_t onFramePayloadLen64(const char* data, size_t count);
+    int onFrameStart(const char* data, size_t count);
+    int onFramePayloadLen(const char* data, size_t count);
+    int onFramePayloadLen16(const char* data, size_t count);
+    int onFramePayloadLen64(const char* data, size_t count);
 
-    ssize_t onFrameMaskingKey(const char* data, size_t count);
-    ssize_t onFrameData(const char* data, size_t count);
+    int onFrameMaskingKey(const char* data, size_t count);
+    int onFrameData(const char* data, size_t count);
 
-    ssize_t handleFramePayloadLen(size_t payloadLen);
-    ssize_t handleFrameData(const ConnectionPtr_t& conn);
-    ssize_t handleMessage(const ConnectionPtr_t& conn, uint8_t opcode, const std::string& message);
-    ssize_t tryRead(const char* data, size_t count, size_t tryReadData);
+    int handleFramePayloadLen(size_t payloadLen);
+    int handleFrameData(const ConnectionPtr_t& conn);
+    int handleMessage(const ConnectionPtr_t& conn, uint8_t opcode, const std::string& message);
+    int tryRead(const char* data, size_t count, size_t tryReadData);
 
     void sendFrame(bool finalFrame, char opcode, const std::string& message = std::string());
 
