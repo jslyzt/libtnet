@@ -90,7 +90,7 @@ uint64_t TimingWheel::update(uint64_t slot, int timeout) {
     uint32_t bucket = u.p[0];
     uint32_t id = u.p[1];
 
-    if (bucket > m_maxBuckets) {
+    if (bucket > (uint32_t)m_maxBuckets) {
         return (uint64_t) - 1;
     }
 
@@ -112,18 +112,16 @@ void TimingWheel::remove(uint64_t slot) {
     uint32_t bucket = u.p[0];
     uint32_t id = u.p[1];
 
-    if (bucket > m_maxBuckets) {
+    if (bucket > (uint32_t)m_maxBuckets) {
         return;
     }
 
     auto& chans = m_buckets[bucket];
-
     if (id >= uint32_t(chans.size())) {
         return;
     }
 
     chans[id] = std::bind(&dummyHandler, _1);
-
     return;
 }
 }

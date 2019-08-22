@@ -35,7 +35,11 @@ void onTimeout(const TimingWheelPtr_t& wheel, const WeakHttpConnectionPtr_t& con
 
 void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
     if (request.method == HTTP_GET) {
+#ifndef WIN32
         int timeout = random() % 60 + 30;
+#else
+        int timeout = rand() % 60 + 30;
+#endif
         comet.wheel->add(std::bind(&onTimeout, _1, WeakHttpConnectionPtr_t(conn)), timeout * 1000);
         //conn->send(200);
     } else {

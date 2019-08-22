@@ -44,15 +44,6 @@ enum ConnEvent {
     Conn_CloseEvent,
 };
 
-template<typename T, typename Func>
-void for_each_all(T& c, const Func& func) {
-    typename T::iterator iter = c.begin();
-    while (iter != c.end()) {
-        func(*iter);
-        ++iter;
-    }
-}
-
 typedef std::shared_ptr<Connection> ConnectionPtr_t;
 typedef std::weak_ptr<Connection> WeakConnectionPtr_t;
 typedef std::shared_ptr<Acceptor> AcceptorPtr_t;

@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <signal.h>
 #include <assert.h>
 #include <time.h>
@@ -17,7 +16,7 @@
 #include "ioloop.h"
 #include "signaler.h"
 #include "timer.h"
-#include "process.h"
+#include "tprocess.h"
 #include "timingwheel.h"
 
 using namespace std;
@@ -74,11 +73,8 @@ void TcpServer::onRun() {
     m_signaler = std::make_shared<Signaler>(signums, std::bind(&TcpServer::onSignal, this, _1, _2));
 
     m_signaler->start(m_loop);
-
     m_idleWheel = std::make_shared<TimingWheel>(1000, 3600);
-
     m_idleWheel->start(m_loop);
-
     m_runCallback(m_loop);
 }
 
@@ -97,33 +93,33 @@ void TcpServer::onStop() {
     }
 
     m_running = false;
-
     m_idleWheel->stop();
-
     m_signaler->stop();
-
-    for_each_all(m_acceptors, std::bind(&Acceptor::stop, _1));
-
+    for (auto con : m_acceptors) {
+        if(con != nullptr) {
+            con->stop();
+        }
+    }
     m_loop->stop();
 }
 
 void TcpServer::stop() {
     LOG_INFO("stop server");
     m_process->stop();
-
     onStop();
 }
 
 void TcpServer::onNewConnection(IOLoop* loop, int fd, const ConnEventCallback_t& callback) {
     ConnectionPtr_t conn = std::make_shared<Connection>(loop, fd);
-
     conn->setEventCallback(callback);
-
     conn->onEstablished();
 
+#ifndef WIN32
     int afterCheck = m_maxIdleTimeout / 2 + random() % m_maxIdleTimeout;
+#else
+    int afterCheck = m_maxIdleTimeout / 2 + rand() % m_maxIdleTimeout;
+#endif
     m_idleWheel->add(std::bind(&TcpServer::onIdleConnCheck, this, _1, WeakConnectionPtr_t(conn)), afterCheck * 1000);
-
     return;
 }
 
@@ -134,7 +130,7 @@ void TcpServer::onIdleConnCheck(const TimingWheelPtr_t& wheel, const WeakConnect
     }
 
     struct timespec t;
-    clock_gettime(CLOCK_MONOTONIC, &t);
+    Timer::clock_gettime(CLOCK_MONOTONIC, &t);
     uint64_t now = t.tv_sec;
 
     if (now - c->lastActiveTime() > (uint64_t)m_maxIdleTimeout) {

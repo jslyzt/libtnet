@@ -46,9 +46,9 @@ private:
 
     int onRead(const ConnectionPtr_t& conn, const char* data, size_t count);
 
-    bool isFinalFrame() { return m_final; }
-    bool isMaskFrame() { return m_mask; }
-    bool isControlFrame() { return m_opcode & 0x08; }
+    bool isFinalFrame() { return m_final > 0; }
+    bool isMaskFrame() { return m_mask > 0; }
+    bool isControlFrame() { return (m_opcode & 0x08) > 0; }
     bool isTextFrame() { return (m_opcode == 0) ? (m_lastOpcode == 0x1) : (m_opcode == 0x1); }
     bool isBinaryFrame() { return (m_opcode == 0) ? (m_lastOpcode == 0x2) : (m_opcode == 0x2); }
 

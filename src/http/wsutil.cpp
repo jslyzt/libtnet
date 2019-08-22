@@ -7,6 +7,9 @@
 #include "httpresponse.h"
 #include "stringutil.h"
 #include "log.h"
+#ifdef WIN32
+#include "win_utils/utils.h"
+#endif
 
 using namespace std;
 
@@ -27,7 +30,11 @@ static const string wsMagicKey = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 string calcKey() {
     int key[4];
     for (int i = 0; i < 4; ++i) {
+#ifdef WIN32
+        key[i] = (int)rand();
+#else
         key[i] = (int)random();
+#endif
     }
 
     return StringUtil::base64Encode(string((char*)key, 16));

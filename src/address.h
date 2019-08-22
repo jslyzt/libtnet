@@ -27,7 +27,7 @@ public:
 
     const struct sockaddr_in& sockAddr() const { return m_addr; }
 
-    std::string ipstr() const;
+    const std::string ipstr() const;
 
 private:
     struct sockaddr_in m_addr;

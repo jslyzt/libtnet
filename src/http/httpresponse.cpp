@@ -73,7 +73,7 @@ void HttpResponse::enableDate() {
     t = *gmtime(&now);
 #endif
     char buf[128];
-    int n = strftime(buf, sizeof buf, "%a, %d %b %Y %H:%M:%S %Z", &t);
+    auto n = strftime(buf, sizeof buf, "%a, %d %b %Y %H:%M:%S %Z", &t);
     static const string DateKey = "Date";
     headers.insert(make_pair(DateKey, string(buf, n)));
 }

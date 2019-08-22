@@ -158,22 +158,18 @@ int HttpParser::handleHeadersComplete() {
 }
 
 int HttpParser::execute(const char* buffer, size_t count) {
-    int n = http_parser_execute(&m_parser, &ms_settings, buffer, count);
+    auto n = http_parser_execute(&m_parser, &ms_settings, buffer, count);
     if (m_parser.upgrade) {
         onUpgrade(buffer + n, count - n);
         return 0;
     } else if (n != count) {
         int code = (m_errorCode != 0 ? m_errorCode : 400);
-
         HttpError error(code, http_errno_description((http_errno)m_parser.http_errno));
 
         LOG_ERROR("parser error %s", error.message.c_str());
-
         onError(error);
-
         return code;
     }
-
     return 0;
 }
 }

@@ -89,7 +89,7 @@ void Acceptor::onAccept(IOLoop* loop, int events) {
 #else
     struct sockaddr_in sa;
     auto slen = (int)sizeof(sa);
-    int sockFd = accept(m_sockFd, (struct sockaddr*) &sa, &slen);
+    int sockFd = (int)accept(m_sockFd, (struct sockaddr*) &sa, &slen);
 #endif
     if (sockFd < 0) {
         int err = errno;
@@ -98,7 +98,7 @@ void Acceptor::onAccept(IOLoop* loop, int events) {
             if (m_dummyFd > 0) {
                 close(m_dummyFd);
             }
-            sockFd = accept(m_sockFd, NULL, NULL);
+            sockFd = (int)accept(m_sockFd, NULL, NULL);
             close(sockFd);
 
             m_dummyFd = createDummyFd();

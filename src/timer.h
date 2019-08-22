@@ -3,6 +3,7 @@
 #include "tnet.h"
 
 #ifdef WIN32
+#include <WinSock2.h>
 #define timespec timeval
 #define CLOCK_MONOTONIC 0
 #endif
@@ -27,8 +28,7 @@ public:
     bool isRepeated() { return m_repeated; }
 
 #ifdef WIN32
-    static LARGE_INTEGER getFILETIMEoffset();
-    static int clock_gettime(int X, struct timeval* tv);
+    static int clock_gettime(int X, timeval* tv);
 #endif
 
     void onTimer(IOLoop* loop, int events);

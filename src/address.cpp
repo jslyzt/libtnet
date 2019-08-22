@@ -47,9 +47,9 @@ uint32_t Address::ip() const {
     return ntohl(m_addr.sin_addr.s_addr);
 }
 
-string Address::ipstr() const {
+const string Address::ipstr() const {
     char buf[32] = {'\0'};
-    inet_ntop(AF_INET, &m_addr.sin_addr, buf, static_cast<socklen_t>(sizeof(buf)));
+    inet_ntop(AF_INET, const_cast<in_addr*>(&m_addr.sin_addr), buf, static_cast<socklen_t>(sizeof(buf)));
     return string(buf, 32);
 }
 

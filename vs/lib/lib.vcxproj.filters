@@ -58,9 +58,6 @@
     <ClCompile Include="..\..\src\poller.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\process.cpp">
-      <Filter>base</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\signaler.cpp">
       <Filter>base</Filter>
     </ClCompile>
@@ -78,6 +75,15 @@
     </ClCompile>
     <ClCompile Include="..\..\src\timingwheel.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tprocess.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\win_utils\fork.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\win_utils\utils.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +156,6 @@
     <ClInclude Include="..\..\src\poller.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\process.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\signaler.h">
       <Filter>base</Filter>
     </ClInclude>
@@ -177,6 +180,12 @@
     <ClInclude Include="..\..\src\tnet.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\tprocess.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\win_utils\utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="http">
@@ -184,6 +193,9 @@
     </Filter>
     <Filter Include="base">
       <UniqueIdentifier>{b053a5b0-ecc0-4101-96c6-c03af95d878c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{8adc5d4a-b86f-4f0a-acee-eb65fa05af3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

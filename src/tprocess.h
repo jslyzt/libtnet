@@ -1,6 +1,12 @@
 #pragma once
 
+#ifdef WIN32
+#include <process.h>
+#include "../win_utils/utils.h"
+#define getpid _getpid
+#else
 #include <unistd.h>
+#endif
 #include <set>
 
 #include "tnet.h"

@@ -13,6 +13,7 @@
 #include "ioloop.h"
 #include "log.h"
 #include "sockutil.h"
+#include "timer.h"
 
 using namespace std;
 
@@ -40,7 +41,7 @@ void Connection::clearEventCallback() {
 
 void Connection::updateActiveTime() {
     struct timespec t;
-    clock_gettime(CLOCK_MONOTONIC, &t);
+    Timer::clock_gettime(CLOCK_MONOTONIC, &t);
     m_lastActiveTime = t.tv_sec;
 }
 
@@ -80,19 +81,13 @@ void Connection::connect(const Address& addr) {
     }
 
     updateActiveTime();
-
     ConnectionPtr_t conn = shared_from_this();
-
-    m_loop->addHandler(m_fd, m_status == Connected ? TNET_READ : TNET_WRITE,
-                       std::bind(&Connection::onHandler, conn, _1, _2));
-
+    m_loop->addHandler(m_fd, m_status == Connected ? TNET_READ : TNET_WRITE, std::bind(&Connection::onHandler, conn, _1, _2));
     m_callback(conn, event, 0);
 }
 
 void Connection::onHandler(IOLoop* loop, int events) {
-    //to prevent ref decr to 0
     ConnectionPtr_t conn = shared_from_this();
-
     if (events & TNET_READ) {
         handleRead();
     }
@@ -114,9 +109,7 @@ void Connection::shutDown(int after) {
     if (m_status == Disconnecting || m_status == Disconnected) {
         return;
     }
-
     m_status = Disconnecting;
-
     if (after == 0) {
         handleClose();
     } else {
@@ -129,18 +122,14 @@ void Connection::handleConnect() {
     if (m_status != Connected) {
         return;
     }
-
     if (SockUtil::getSockError(m_fd) != 0) {
         handleError();
         return;
     }
 
     m_loop->updateHandler(m_fd, TNET_READ);
-
     updateActiveTime();
-
     m_status = Connected;
-
     m_callback(shared_from_this(), Conn_ConnectEvent, 0);
 }
 
@@ -150,15 +139,11 @@ void Connection::handleRead() {
     }
 
     char buf[MaxReadBuffer];
-    int n = read(m_fd, buf, sizeof(buf));
-
+    int n = ::recv(m_fd, buf, sizeof(buf), 0);
     if (n > 0) {
         StackBuffer b(buf, n);
-
         updateActiveTime();
-
         m_callback(shared_from_this(), Conn_ReadEvent, &b);
-
         return;
     } else if (n == 0) {
         handleClose();
@@ -170,7 +155,6 @@ void Connection::handleRead() {
             LOG_INFO("read %s", errorMsg(err));
             return;
         }
-
         handleError();
         return;
     }
@@ -185,32 +169,31 @@ void Connection::handleWrite(const string& data) {
         return;
     }
 
-    if (m_sendBuffer.empty() && data.empty()) {
+    if (m_sendBuffer.empty() == true && data.empty() == true) {
         m_loop->updateHandler(m_fd, TNET_READ);
         return;
     }
 
-    size_t totalSize = m_sendBuffer.size() + data.size();
-    int niov = 2;
-
-    struct iovec iov[niov];
-
+    auto totalSize = (int)(m_sendBuffer.size() + data.size());
+    int n = 0;
+#ifndef WIN32
+    struct iovec iov[2];
     iov[0].iov_base = (void*)m_sendBuffer.data();
     iov[0].iov_len = m_sendBuffer.size();
-
     iov[1].iov_base = (void*)data.data();
     iov[1].iov_len = data.size();
-
-    int n = writev(m_fd, iov, niov);
+    n = writev(m_fd, iov, 2);
+#else
+    n = ::send(m_fd, m_sendBuffer.c_str(), (int)(m_sendBuffer.size()), 0);
+    if (data.empty() == false) {
+        n += ::send(m_fd, data.c_str(), (int)(data.size()), 0);
+    }
+#endif
     if (n == totalSize) {
         string().swap(m_sendBuffer);
-
         m_callback(shared_from_this(), Conn_WriteCompleteEvent, 0);
-
         m_loop->updateHandler(m_fd, TNET_READ);
-
         updateActiveTime();
-
         return;
     } else if (n < 0) {
         int err = errno;
@@ -218,7 +201,6 @@ void Connection::handleWrite(const string& data) {
         if (err == EAGAIN || err == EWOULDBLOCK) {
             //try write later, can enter here?
             m_sendBuffer.append(data);
-
             m_loop->updateHandler(m_fd, TNET_READ | TNET_WRITE);
             return;
         } else {
@@ -228,8 +210,7 @@ void Connection::handleWrite(const string& data) {
         }
     } else {
         if (m_sendBuffer.size() < n) {
-            n -= m_sendBuffer.size();
-
+            n -= (int)m_sendBuffer.size();
             m_sendBuffer = data.substr(n);
         } else {
             m_sendBuffer = m_sendBuffer.substr(n);
@@ -237,7 +218,6 @@ void Connection::handleWrite(const string& data) {
         }
 
         updateActiveTime();
-
         m_loop->updateHandler(m_fd, TNET_READ | TNET_WRITE);
     }
 }
@@ -250,8 +230,11 @@ bool Connection::disconnect() {
     m_status = Disconnected;
     m_loop->removeHandler(m_fd);
 
+#ifdef WIN32
+    closesocket(m_fd);
+#else
     close(m_fd);
-
+#endif
     return true;
 }
 

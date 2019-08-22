@@ -30,7 +30,11 @@ using namespace std;
 namespace tnet {
 
 int SockUtil::create() {
+#ifndef WIN32
     int fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+#else
+    auto fd = (int)socket(AF_INET, SOCK_STREAM, 0);
+#endif
     if (fd < 0) {
         return fd;
     }
@@ -47,7 +51,6 @@ int SockUtil::bindAndListen(const Address& addr) {
     }
 
     SockUtil::setReuseable(fd, true);
-
     do {
         struct sockaddr_in sockAddr = addr.sockAddr();
         if (bind(fd, (struct sockaddr*)&sockAddr, sizeof(sockAddr)) < 0) {
@@ -70,7 +73,6 @@ int SockUtil::bindAndListen(const Address& addr) {
 
 int SockUtil::connect(int sockFd, const Address& addr) {
     struct sockaddr_in sockAddr = addr.sockAddr();
-
     int ret = ::connect(sockFd, (struct sockaddr*)&sockAddr, sizeof(sockAddr));
     if (ret < 0) {
         int err = errno;
@@ -83,17 +85,29 @@ int SockUtil::connect(int sockFd, const Address& addr) {
 
 int SockUtil::setNoDelay(int sockFd, bool on) {
     int opt = on ? 1 : 0;
+#ifndef WIN32
     return setsockopt(sockFd, IPPROTO_TCP, TCP_NODELAY, &opt, static_cast<socklen_t>(sizeof(opt)));
+#else
+    return setsockopt(sockFd, IPPROTO_TCP, TCP_NODELAY, (const char*)&opt, static_cast<socklen_t>(sizeof(opt)));
+#endif
 }
 
 int SockUtil::setReuseable(int sockFd, bool on) {
     int opt = on ? 1 : 0;
+#ifndef WIN32
     return setsockopt(sockFd, SOL_SOCKET, SO_REUSEADDR, &opt, static_cast<socklen_t>(sizeof(opt)));
+#else
+    return setsockopt(sockFd, SOL_SOCKET, SO_REUSEADDR, (const char*)&opt, static_cast<socklen_t>(sizeof(opt)));
+#endif
 }
 
 int SockUtil::setKeepAlive(int sockFd, bool on) {
     int opt = on ? 1 : 0;
+#ifndef WIN32
     return setsockopt(sockFd, SOL_SOCKET, SO_KEEPALIVE, &opt, static_cast<socklen_t>(sizeof(opt)));
+#else
+    return setsockopt(sockFd, SOL_SOCKET, SO_KEEPALIVE, (const char*)&opt, static_cast<socklen_t>(sizeof(opt)));
+#endif
 }
 
 int SockUtil::getLocalAddr(int sockFd, Address& addr) {
@@ -121,7 +135,11 @@ int SockUtil::getRemoteAddr(int sockFd, Address& addr) {
 int SockUtil::getSockError(int sockFd) {
     int opt;
     socklen_t optLen = static_cast<socklen_t>(sizeof(opt));
+#ifndef WIN32
     if (getsockopt(sockFd, SOL_SOCKET, SO_ERROR, &opt, &optLen) < 0) {
+#else
+    if (getsockopt(sockFd, SOL_SOCKET, SO_ERROR, (char*)&opt, &optLen) < 0) {
+#endif
         int err = errno;
         return err;
     } else {
@@ -153,7 +171,7 @@ uint32_t SockUtil::getHostByName(const string& host) {
 }
 
 int SockUtil::bindDevice(int sockFd, const string& device) {
-
+#ifndef WIN32
     struct ifreq ifr;
     memset(&ifr, 0, sizeof(ifr));
 
@@ -172,7 +190,7 @@ int SockUtil::bindDevice(int sockFd, const string& device) {
         LOG_ERROR("bind interface error %s", errorMsg(errno));
         return -1;
     }
-
+#endif
     return 0;
 }
 }

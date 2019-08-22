@@ -3,9 +3,14 @@
 #include <stdlib.h>
 #include <vector>
 #include <assert.h>
-#include <arpa/inet.h>
 #include <string.h>
+
+#ifndef WIN32
+#include <arpa/inet.h>
 #include <endian.h>
+#else
+#include <winsock2.h>
+#endif
 
 #include "connection.h"
 #include "httprequest.h"
@@ -127,7 +132,6 @@ int WsConnection::onFrameStart(const char* data, size_t count) {
     m_cache.clear();
 
     char header = data[0];
-
     if (header & 0x70) {
         //reserved bits now not supported, abort
         return -1;
@@ -188,8 +192,7 @@ int WsConnection::tryRead(const char* data, size_t count, size_t tryReadData) {
     }
 
     m_cache.append(data, tryReadData - m_cache.size());
-
-    return tryReadData - pendingSize;
+    return (int)tryReadData - (int)pendingSize;
 }
 
 int WsConnection::onFramePayloadLen16(const char* data, size_t count) {
@@ -208,7 +211,6 @@ int WsConnection::onFramePayloadLen16(const char* data, size_t count) {
     payloadLen = ntohs(payloadLen);
 
     handleFramePayloadLen(payloadLen);
-
     return readLen;
 }
 
@@ -226,10 +228,13 @@ int WsConnection::onFramePayloadLen64(const char* data, size_t count) {
     }
 
     //todo ntohl64
+#ifndef WIN32
     payloadLen = be64toh(payloadLen);
+#else
+    payloadLen = ntohll(payloadLen);
+#endif
 
     handleFramePayloadLen(payloadLen);
-
     return readLen;
 }
 
@@ -240,11 +245,8 @@ int WsConnection::onFrameMaskingKey(const char* data, size_t count) {
     }
 
     memcpy(m_maskingKey, m_cache.data(), sizeof(m_maskingKey));
-
     m_cache.clear();
-
     m_status = FrameData;
-
     return readLen;
 }
 
@@ -313,7 +315,6 @@ int WsConnection::handleFrameData(const ConnectionPtr_t& conn) {
     }
 
     m_status = FrameStart;
-
     return 0;
 }
 
@@ -330,7 +331,6 @@ int WsConnection::handleMessage(const ConnectionPtr_t& conn, uint8_t opcode, con
         case 0x8:
             //clsoe
             m_callback(shared_from_this(), Ws_CloseEvent, 0);
-
             conn->shutDown(500);
             break;
         case 0x9:
@@ -359,9 +359,7 @@ void WsConnection::send(const string& message) {
 }
 
 void WsConnection::send(const string& message, bool binary) {
-    char opcode = binary ? 0x2 : 0x1;
-
-    //for utf-8, we assume message is already utf-8
+    char opcode = binary ? 0x2 : 0x1; //for utf-8, we assume message is already utf-8
     sendFrame(true, opcode, message);
 }
 
@@ -404,13 +402,15 @@ void WsConnection::sendFrame(bool finalFrame, char opcode, const string& message
         char payload = mask | 126;
         buf.append((char*)&payload, sizeof(payload));
         uint16_t len = htons((uint16_t)payloadLen);
-
         buf.append((char*)&len, sizeof(uint16_t));
     } else {
         char payload = mask | 127;
         buf.append((char*)&payload, sizeof(payload));
-
+#ifndef WIN32
         uint64_t len = htobe64(payloadLen);
+#else
+        uint64_t len = htonll(payloadLen);
+#endif
         buf.append((char*)&len, sizeof(uint64_t));
     }
 
@@ -418,9 +418,7 @@ void WsConnection::sendFrame(bool finalFrame, char opcode, const string& message
         int randomKey = rand();
         char maskingKey[4];
         memcpy(maskingKey, &randomKey, sizeof(maskingKey));
-
         buf.append(maskingKey, 4);
-
         size_t pos = buf.size();
         buf.append(message);
         for (size_t i = 0; i < buf.size() - pos; ++i) {
@@ -429,7 +427,6 @@ void WsConnection::sendFrame(bool finalFrame, char opcode, const string& message
     } else {
         buf.append(message);
     }
-
     conn->send(buf);
 }
 

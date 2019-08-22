@@ -1,10 +1,15 @@
-#include "process.h"
+#include "tprocess.h"
 
 #include <vector>
-#include <sys/wait.h>
 #include <sys/types.h>
+#ifndef WIN32
+#include <sys/wait.h>
 #include <unistd.h>
 #include <sys/signalfd.h>
+#else
+#include <windows.h>
+#include <signal.h>
+#endif
 
 #include "signaler.h"
 #include "log.h"
@@ -20,7 +25,6 @@ Process::Process()
 }
 
 Process::~Process() {
-
 }
 
 pid_t Process::create() {
@@ -37,32 +41,28 @@ pid_t Process::create() {
         //parent
         m_children.insert(pid);
     }
-
     return 0;
 }
 
 void Process::wait(size_t num, const ProcessCallback_t& callback) {
     m_running = true;
     for (size_t i = 0; i < num; ++i) {
-        pid_t pid = create();
+        auto pid = create();
         if (pid != 0) {
             callback();
             return;
         }
     }
-
+#ifndef WIN32
     while (!m_children.empty()) {
         int status = 0;
         pid_t pid;
         if ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
             m_children.erase(pid);
-
             if (!m_running) {
                 continue;
             }
-
             LOG_INFO("child was dead, restart it");
-
             if (create() != 0) {
                 callback();
                 return;
@@ -73,25 +73,33 @@ void Process::wait(size_t num, const ProcessCallback_t& callback) {
             continue;
         }
     }
-
+#else
+    if(m_children.empty() == false) {
+        auto hd = OpenProcess(PROCESS_ALL_ACCESS, FALSE, *(m_children.begin()));
+        if (hd != nullptr) {
+            WaitForSingleObject(hd, INFINITE);
+            CloseHandle(hd);
+        }
+    }
+#endif
     return;
 }
 
 void Process::stop() {
     LOG_INFO("stop child process");
     m_running = false;
-    for_each_all(m_children, std::bind(::kill, _1, SIGTERM));
+    for (auto pid : m_children) {
+        kill(pid, SIGTERM);
+    }
 }
 
 void Process::checkStop() {
+#ifndef WIN32
     struct signalfd_siginfo fdsi;
     int s = read(m_fd, &fdsi, sizeof(fdsi));
-
     if (s != sizeof(fdsi)) {
-        //no signal,
         return;
     }
-
     int signum = fdsi.ssi_signo;
     switch (signum) {
         case SIGTERM:
@@ -101,5 +109,6 @@ void Process::checkStop() {
             LOG_INFO("signum %d", signum);
             break;
     }
+#endif
 }
 }

@@ -2,11 +2,9 @@
 
 #include <assert.h>
 #include <errno.h>
-
 #ifndef WIN32
 #include <sys/timerfd.h>
 #endif
-
 #include "ioloop.h"
 #include "log.h"
 
@@ -130,7 +128,7 @@ void Timer::onTimer(IOLoop* loop, int events) {
 
 #ifdef WIN32
 
-LARGE_INTEGER Timer::getFILETIMEoffset() {
+LARGE_INTEGER getFILETIMEoffset() {
     SYSTEMTIME s;
     FILETIME f;
     LARGE_INTEGER t;
@@ -149,10 +147,9 @@ LARGE_INTEGER Timer::getFILETIMEoffset() {
     return (t);
 }
 
-int Timer::clock_gettime(int X, struct timeval* tv) {
+int Timer::clock_gettime(int X, timeval* tv) {
     LARGE_INTEGER t;
     FILETIME f;
-    double microseconds;
     static LARGE_INTEGER offset;
     static double frequencyToMicroseconds;
     static int initialized = 0;
@@ -180,9 +177,8 @@ int Timer::clock_gettime(int X, struct timeval* tv) {
     }
 
     t.QuadPart -= offset.QuadPart;
-    microseconds = (double)t.QuadPart / frequencyToMicroseconds;
-    t.QuadPart = microseconds;
-    tv->tv_sec = t.QuadPart / 1000000;
+    t.QuadPart = (LONGLONG)(t.QuadPart / frequencyToMicroseconds);
+    tv->tv_sec = (long)(t.QuadPart / 1000000);
     tv->tv_usec = t.QuadPart % 1000000;
     return (0);
 }

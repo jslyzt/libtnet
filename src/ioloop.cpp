@@ -1,6 +1,5 @@
 #include "ioloop.h"
 
-#include <sys/epoll.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <algorithm>
@@ -18,7 +17,9 @@ namespace tnet {
 class IgnoreSigPipe {
 public:
     IgnoreSigPipe() {
+#ifndef WIN32
         signal(SIGPIPE, SIG_IGN);
+#endif
     }
 };
 
@@ -29,48 +30,36 @@ const int MaxPollWaitTime = 1 * 1000;
 
 IOLoop::IOLoop() {
     m_running = false;
-
     m_poller = new Poller(this);
-
     m_notifier = std::make_shared<Notifier>(std::bind(&IOLoop::onWake, this, _1));
-
     m_wheel = std::make_shared<TimingWheel>(1000, 3600);
-
     m_events.resize(DefaultEventsCapacity, 0);
 }
 
 IOLoop::~IOLoop() {
     delete m_poller;
-
-    for_each(m_events.begin(), m_events.end(),
-             default_delete<IOEvent>());
+    for_each(m_events.begin(), m_events.end(), default_delete<IOEvent>());
 }
 
 void IOLoop::start() {
     m_running = true;
-
     m_notifier->start(this);
-
     m_wheel->start(this);
-
     run();
 }
 
 void IOLoop::stop() {
     m_running = false;
-
     m_notifier->notify();
 }
 
 void IOLoop::run() {
     while (m_running) {
         m_poller->poll(MaxPollWaitTime, m_events);
-
         handleCallbacks();
     }
 
     LOG_INFO("loop stop");
-
     m_notifier->stop();
 }
 
@@ -97,17 +86,13 @@ int IOLoop::updateHandler(int fd, int events) {
         LOG_ERROR("invalid fd %d", fd);
         return -1;
     }
-
     if (m_events[fd]->events == events) {
         return 0;
     }
-
     if (m_poller->update(fd, events) != 0) {
         return -1;
     }
-
     m_events[fd]->events = events;
-
     return 0;
 }
 
@@ -116,12 +101,10 @@ int IOLoop::removeHandler(int fd) {
         LOG_INFO("invalid fd %d", fd);
         return -1;
     }
-
     m_poller->remove(fd);
 
     delete m_events[fd];
     m_events[fd] = NULL;
-
     return 0;
 }
 

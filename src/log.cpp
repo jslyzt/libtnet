@@ -4,6 +4,10 @@
 #include <stdarg.h>
 #include <time.h>
 #include <string.h>
+#ifdef WIN32
+#include <process.h>
+#define getpid _getpid
+#endif
 
 namespace tnet {
 
@@ -22,8 +26,7 @@ const char* errorMsg(int code) {
 #endif
 }
 
-static int MaxLogMsg = 1024;
-
+static const int MaxLogMsg = 1024;
 static const char* LevelMsg[] = {"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
 
 #define WRITE_LOG(level)\
@@ -79,7 +82,7 @@ void Log::warn(const char* file, const char* function, int line, const char* fmt
 }
 
 void Log::error(const char* file, const char* function, int line, const char* fmt, ...) {
-    WRITE_LOG(ERROR);
+    WRITE_LOG(Error);
 }
 
 void Log::fatal(const char* file, const char* function, int line, const char* fmt, ...) {
