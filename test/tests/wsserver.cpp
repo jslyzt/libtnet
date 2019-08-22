@@ -6,6 +6,7 @@
 #include "address.h"
 #include "connection.h"
 #include "wsconnection.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -33,7 +34,7 @@ void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* cont
     }
 }
 
-int main() {
+TEST_F(WSTest, server) {
     TcpServer s;
 
     HttpServer httpd(&s);
@@ -43,7 +44,4 @@ int main() {
     httpd.listen(Address(11181));
 
     s.start();
-
-    return 0;
 }
-

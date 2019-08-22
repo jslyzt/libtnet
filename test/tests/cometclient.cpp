@@ -10,6 +10,7 @@
 #include "httprequest.h"
 #include "httpresponse.h"
 #include "ioloop.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -31,35 +32,19 @@ void request(const TimingWheelPtr_t& wheel, const HttpClientPtr_t& client, int n
     }
 }
 
-int main(int argc, char* args[]) {
-    Log::rootLog().setLevel(Log::ERROR);
+TEST_F(CometTest, client) {
+    Log::rootLog().setLevel(Log::Error);
 
-    if (argc < 2) {
-        cout << "args: num [eth0]" << endl;
-    }
-
-    int num = num = atoi(args[1]);
-
+    int num = 10;
     vector<HttpClientPtr_t> clients;
-
     IOLoop loop;
-
-    if (argc == 2) {
-        clients.push_back(std::make_shared<HttpClient>(&loop));
-    } else {
-        for (int i = 0; i < argc - 2; ++i) {
-            HttpClientPtr_t client = std::make_shared<HttpClient>(&loop);
-            client->bindDevice(args[i + 2]);
-            clients.push_back(client);
-        }
-    }
+    clients.push_back(std::make_shared<HttpClient>(&loop));
 
     cout << "request num:" << num << endl;
 
-
     TimingWheelPtr_t wheel = std::make_shared<TimingWheel>(1000, 3600);
 
-    int c = 60 * clients.size();
+    int c = 60 * (int)clients.size();
     for (int i = 0; i < c; ++i) {
         int reqNum = num / c;
         for (auto it = clients.begin(); it != clients.end(); ++it) {
@@ -68,8 +53,5 @@ int main(int argc, char* args[]) {
     }
 
     wheel->start(&loop);
-
     loop.start();
-
-    return 0;
 }

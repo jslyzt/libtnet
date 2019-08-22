@@ -5,6 +5,7 @@
 #include "httprequest.h"
 #include "httpresponse.h"
 #include "ioloop.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -24,7 +25,7 @@ void onResponse(IOLoop* loop, const HttpResponse& resp) {
     loop->stop();
 }
 
-int main() {
+TEST_F(HttpTest, client) {
     IOLoop loop;
 
     HttpClientPtr_t client = std::make_shared<HttpClient>(&loop);
@@ -34,6 +35,4 @@ int main() {
     loop.start();
 
     cout << "exit" << endl;
-
-    return 0;
 }

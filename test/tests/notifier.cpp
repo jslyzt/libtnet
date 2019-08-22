@@ -4,6 +4,7 @@
 #include "ioloop.h"
 #include "timer.h"
 #include "tnet.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -32,7 +33,7 @@ void run(IOLoop* loop) {
     timer->start(loop);
 }
 
-int main() {
+TEST_F(NotifyTest, test) {
     IOLoop loop;
 
     run(&loop);
@@ -42,6 +43,4 @@ int main() {
     loop.start();
 
     cout << "stop" << endl;
-
-    return 0;
 }

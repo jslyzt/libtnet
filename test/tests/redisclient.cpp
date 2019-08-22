@@ -7,6 +7,7 @@
 #include "log.h"
 #include "address.h"
 #include "redistrans.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -65,7 +66,7 @@ void onNewTrans(const RedisTransPtr_t& trans, int status) {
     trans->commit(std::bind(&onCommit, _1));
 }
 
-int main() {
+TEST_F(RedisTest, client) {
     IOLoop loop;
 
     Address addr("127.0.0.1", 6379);
@@ -76,6 +77,4 @@ int main() {
     client->newTrans(std::bind(&onNewTrans, _1, _2));
 
     loop.start();
-
-    return 0;
 }

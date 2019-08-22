@@ -6,6 +6,7 @@
 #include "signaler.h"
 #include "ioloop.h"
 #include "tnet.h"
+#include "../tnet_test.h"
 
 using namespace tnet;
 using namespace std;
@@ -23,7 +24,7 @@ void onSignaler(const SignalerPtr_t& signaler, int signum) {
     }
 }
 
-int main() {
+TEST_F(SignalTest, test) {
     IOLoop loop;
 
     vector<int> signums{SIGINT, SIGTERM};
@@ -36,6 +37,4 @@ int main() {
     loop.start();
 
     cout << "end" << endl;
-
-    return 0;
 }

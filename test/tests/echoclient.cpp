@@ -4,6 +4,7 @@
 #include "tnet.h"
 #include "sockutil.h"
 #include "address.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -40,7 +41,7 @@ void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* conte
     }
 }
 
-int main() {
+TEST_F(EchoTest, client) {
     IOLoop loop;
 
     int fd = SockUtil::create();
@@ -52,6 +53,4 @@ int main() {
     conn->connect(Address(11181));
 
     loop.start();
-
-    return 0;
 }

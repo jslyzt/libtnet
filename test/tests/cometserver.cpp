@@ -10,6 +10,7 @@
 #include "httpresponse.h"
 #include "httpconnection.h"
 #include "timingwheel.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -47,7 +48,7 @@ void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
     }
 }
 
-int main() {
+TEST_F(CometTest, server) {
     Log::rootLog().setLevel(Log::Error);
 
     TcpServer s;
@@ -61,6 +62,4 @@ int main() {
     httpd.listen(Address(11181));
 
     s.start(8);
-
-    return 0;
 }

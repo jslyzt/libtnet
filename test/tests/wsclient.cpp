@@ -4,6 +4,7 @@
 #include "ioloop.h"
 #include "wsconnection.h"
 #include "log.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -47,13 +48,11 @@ void onWsConnEvent(const WsConnectionPtr_t& conn, WsEvent event, const void* con
     }
 }
 
-int main() {
+TEST_F(WSTest, client) {
     IOLoop loop;
     WsClientPtr_t client = std::make_shared<WsClient>(&loop);
 
     client->connect("ws://127.0.0.1:11181/push/ws", std::bind(&onWsConnEvent, _1, _2, _3));
 
     loop.start();
-
-    return 0;
 }

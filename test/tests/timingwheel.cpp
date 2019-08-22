@@ -3,6 +3,7 @@
 #include "timingwheel.h"
 #include "ioloop.h"
 #include "tnet.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -29,7 +30,8 @@ void onWheel(const TimingWheelPtr_t& wheel, int num) {
     }
 }
 
-int main() {
+
+TEST_F(TimeWheelTest, test) {
     IOLoop loop;
 
     TimingWheelPtr_t t = std::make_shared<TimingWheel>(1000, 20);
@@ -45,6 +47,4 @@ int main() {
     t->stop();
 
     cout << "end" << endl;
-
-    return 0;
 }

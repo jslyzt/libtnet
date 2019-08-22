@@ -14,6 +14,7 @@
 #include "httprequest.h"
 #include "httpresponse.h"
 #include "httpconnection.h"
+#include "../tnet_test.h"
 
 using namespace std;
 using namespace tnet;
@@ -35,8 +36,8 @@ void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
 }
 
 
-int main() {
-    Log::rootLog().setLevel(Log::ERROR);
+TEST_F(HttpTest, server) {
+    Log::rootLog().setLevel(Log::Error);
 
     TcpServer s;
 
@@ -51,8 +52,6 @@ int main() {
     s.start(4);
 
     LOG_INFO("stop server");
-
-    return 0;
 }
 
 
