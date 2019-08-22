@@ -20,19 +20,20 @@ using namespace std;
 using namespace tnet;
 using namespace std::placeholders;
 
+namespace http {
+    void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
+        HttpResponse resp;
+        resp.statusCode = 200;
+        resp.setContentType("text/html");
+        resp.setKeepAlive(true);
+        resp.enableDate();
 
-void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
-    HttpResponse resp;
-    resp.statusCode = 200;
-    resp.setContentType("text/html");
-    resp.setKeepAlive(true);
-    resp.enableDate();
+        resp.body.append("first");
+        //resp.body.append(1600, 'a');
+        resp.body.append("Hello World");
 
-    resp.body.append("first");
-    //resp.body.append(1600, 'a');
-    resp.body.append("Hello World");
-
-    conn->send(resp);
+        conn->send(resp);
+    }
 }
 
 
@@ -43,7 +44,7 @@ TEST_F(HttpTest, server) {
 
     HttpServer httpd(&s);
 
-    httpd.setHttpCallback("/", std::bind(&onHandler, _1, _2));
+    httpd.setHttpCallback("/", std::bind(&http::onHandler, _1, _2));
 
     httpd.listen(Address(11181));
 

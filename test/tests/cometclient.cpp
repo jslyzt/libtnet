@@ -15,22 +15,25 @@
 using namespace std;
 using namespace tnet;
 
-string url = "http://10.20.187.120:11181/";
+namespace comet {
+    string url = "http://10.20.187.120:11181/";
 
-void onResponse(const HttpClientPtr_t& client, const HttpResponse& resp) {
-    if (resp.statusCode != 200) {
-        cout << "request error:" << resp.statusCode << "\t" << resp.body << endl;
-        return;
-    }
+    void onResponse(const HttpClientPtr_t& client, const HttpResponse& resp) {
+        if (resp.statusCode != 200) {
+            cout << "request error:" << resp.statusCode << "\t" << resp.body << endl;
+            return;
+        }
 
-    client->request(url, std::bind(&onResponse, client, _1));
-}
-
-void request(const TimingWheelPtr_t& wheel, const HttpClientPtr_t& client, int num) {
-    for (int i = 0; i < num; ++i) {
         client->request(url, std::bind(&onResponse, client, _1));
     }
+
+    void request(const TimingWheelPtr_t& wheel, const HttpClientPtr_t& client, int num) {
+        for (int i = 0; i < num; ++i) {
+            client->request(url, std::bind(&onResponse, client, _1));
+        }
+    }
 }
+
 
 TEST_F(CometTest, client) {
     Log::rootLog().setLevel(Log::Error);
@@ -48,7 +51,7 @@ TEST_F(CometTest, client) {
     for (int i = 0; i < c; ++i) {
         int reqNum = num / c;
         for (auto it = clients.begin(); it != clients.end(); ++it) {
-            wheel->add(std::bind(&request, _1, *it, reqNum), i * 1000);
+            wheel->add(std::bind(&comet::request, _1, *it, reqNum), i * 1000);
         }
     }
 

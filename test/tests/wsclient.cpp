@@ -9,14 +9,16 @@
 using namespace std;
 using namespace tnet;
 
-int i = 0;
+namespace ws {
 
-void onWriteComplete(int j) {
-    LOG_INFO("write complete %d", j);
-}
+    int i = 0;
 
-void onWsConnEvent(const WsConnectionPtr_t& conn, WsEvent event, const void* context) {
-    switch (event) {
+    void onWriteComplete(int j) {
+        LOG_INFO("write complete %d", j);
+    }
+
+    void onWsConnEvent(const WsConnectionPtr_t& conn, WsEvent event, const void* context) {
+        switch (event) {
         case Ws_OpenEvent:
             LOG_INFO("open");
             conn->send("Hello world");
@@ -39,12 +41,13 @@ void onWsConnEvent(const WsConnectionPtr_t& conn, WsEvent event, const void* con
             }
 
         }
-        break;
+                              break;
         case Ws_ErrorEvent:
             LOG_INFO("error");
             break;
         default:
             break;
+        }
     }
 }
 
@@ -52,7 +55,7 @@ TEST_F(WSTest, client) {
     IOLoop loop;
     WsClientPtr_t client = std::make_shared<WsClient>(&loop);
 
-    client->connect("ws://127.0.0.1:11181/push/ws", std::bind(&onWsConnEvent, _1, _2, _3));
+    client->connect("ws://127.0.0.1:11181/push/ws", std::bind(&ws::onWsConnEvent, _1, _2, _3));
 
     loop.start();
 }

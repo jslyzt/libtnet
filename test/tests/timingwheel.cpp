@@ -8,36 +8,38 @@
 using namespace std;
 using namespace tnet;
 
-int i = 0;
+namespace timerw {
 
-void onWheel(const TimingWheelPtr_t& wheel, int num) {
-    i++;
+    int i = 0;
 
-    cout << i << "\t" << num << "\t" << "onwheel\t" << time(0) << endl;
-    uint64_t h = wheel->add(std::bind(&onWheel, _1, num), num * 1000);
+    void onWheel(const TimingWheelPtr_t& wheel, int num) {
+        i++;
 
-    if (i == 5) {
-        wheel->update(h, num * 1000);
-    }
+        cout << i << "\t" << num << "\t" << "onwheel\t" << time(0) << endl;
+        uint64_t h = wheel->add(std::bind(&onWheel, _1, num), num * 1000);
 
-    if (i == 6) {
-        wheel->remove(h);
-        wheel->add(std::bind(&onWheel, _1, num), num * 1000);
-    }
+        if (i == 5) {
+            wheel->update(h, num * 1000);
+        }
 
-    if (i > 10) {
-        wheel->loop()->stop();
+        if (i == 6) {
+            wheel->remove(h);
+            wheel->add(std::bind(&onWheel, _1, num), num * 1000);
+        }
+
+        if (i > 10) {
+            wheel->loop()->stop();
+        }
     }
 }
-
 
 TEST_F(TimeWheelTest, test) {
     IOLoop loop;
 
     TimingWheelPtr_t t = std::make_shared<TimingWheel>(1000, 20);
 
-    t->add(std::bind(&onWheel, _1, 1), 1000);
-    t->add(std::bind(&onWheel, _1, 2), 2000);
+    t->add(std::bind(&timerw::onWheel, _1, 1), 1000);
+    t->add(std::bind(&timerw::onWheel, _1, 2), 2000);
 
     t->start(&loop);
 
@@ -45,6 +47,5 @@ TEST_F(TimeWheelTest, test) {
     loop.start();
 
     t->stop();
-
     cout << "end" << endl;
 }

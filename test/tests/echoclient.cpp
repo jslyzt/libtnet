@@ -9,10 +9,11 @@
 using namespace std;
 using namespace tnet;
 
-int i = 0;
+namespace echoc {
+    int i = 0;
 
-void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
-    switch (event) {
+    void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
+        switch (event) {
         case Conn_ReadEvent: {
             const StackBuffer* buffer = (const StackBuffer*)(context);
             LOG_INFO("echo %s", string(buffer->buffer, buffer->count).c_str());
@@ -24,8 +25,7 @@ void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* conte
             if (++i > 10) {
                 conn->shutDown();
             }
-        }
-        break;
+        } break;
         case Conn_CloseEvent:
             LOG_INFO("close");
             break;
@@ -38,8 +38,10 @@ void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* conte
             break;
         default:
             break;
+        }
     }
 }
+
 
 TEST_F(EchoTest, client) {
     IOLoop loop;
@@ -48,7 +50,7 @@ TEST_F(EchoTest, client) {
 
     ConnectionPtr_t conn = std::make_shared<Connection>(&loop, fd);
 
-    conn->setEventCallback(std::bind(&onConnEvent, _1, _2, _3));
+    conn->setEventCallback(std::bind(&echoc::onConnEvent, _1, _2, _3));
 
     conn->connect(Address(11181));
 

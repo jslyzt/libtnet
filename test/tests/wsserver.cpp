@@ -11,8 +11,10 @@
 using namespace std;
 using namespace tnet;
 
-void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* context) {
-    switch (event) {
+namespace ws {
+
+    void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* context) {
+        switch (event) {
         case Ws_OpenEvent:
             LOG_INFO("websocket open");
             break;
@@ -24,13 +26,14 @@ void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* cont
             LOG_INFO("websocket message %s", str.c_str());
             conn->send("hello " + str);
         }
-        break;
+                              break;
         case Ws_PongEvent:
             LOG_INFO("websocket pong");
             break;
         case Ws_ErrorEvent:
             LOG_INFO("websocket error");
             break;
+        }
     }
 }
 
@@ -39,7 +42,7 @@ TEST_F(WSTest, server) {
 
     HttpServer httpd(&s);
 
-    httpd.setWsCallback("/push/ws", std::bind(&onWsCallback, _1, _2, _3));
+    httpd.setWsCallback("/push/ws", std::bind(&ws::onWsCallback, _1, _2, _3));
 
     httpd.listen(Address(11181));
 

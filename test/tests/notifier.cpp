@@ -9,34 +9,37 @@
 using namespace std;
 using namespace tnet;
 
-void onNotify(const NotifierPtr_t& notifier) {
-    cout << "on notify" << endl;
+namespace notify {
 
-    IOLoop* loop = notifier->loop();
+    void onNotify(const NotifierPtr_t& notifier) {
+        cout << "on notify" << endl;
 
-    notifier->stop();
+        IOLoop* loop = notifier->loop();
 
-    loop->stop();
-}
+        notifier->stop();
 
-void onTimer(const TimerPtr_t& timer, const NotifierPtr_t& notifier) {
-    cout << "begin to notify" << endl;
+        loop->stop();
+    }
 
-    notifier->notify();
-}
+    void onTimer(const TimerPtr_t& timer, const NotifierPtr_t& notifier) {
+        cout << "begin to notify" << endl;
 
-void run(IOLoop* loop) {
-    NotifierPtr_t notifier = std::make_shared<Notifier>(std::bind(&onNotify, _1));
-    TimerPtr_t timer = std::make_shared<Timer>(std::bind(&onTimer, _1, notifier), 0, 5000);
+        notifier->notify();
+    }
 
-    notifier->start(loop);
-    timer->start(loop);
+    void run(IOLoop* loop) {
+        NotifierPtr_t notifier = std::make_shared<Notifier>(std::bind(&onNotify, _1));
+        TimerPtr_t timer = std::make_shared<Timer>(std::bind(&onTimer, _1, notifier), 0, 5000);
+
+        notifier->start(loop);
+        timer->start(loop);
+    }
 }
 
 TEST_F(NotifyTest, test) {
     IOLoop loop;
 
-    run(&loop);
+    notify::run(&loop);
 
     cout << "start" << endl;
 
