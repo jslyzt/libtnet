@@ -33,7 +33,7 @@ int SockUtil::create() {
 #ifndef WIN32
     int fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
 #else
-    auto fd = (int)socket(AF_INET, SOCK_STREAM, 0);
+    auto fd = (int)socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 #endif
     if (fd < 0) {
         return fd;
@@ -73,14 +73,36 @@ int SockUtil::bindAndListen(const Address& addr) {
 
 int SockUtil::connect(int sockFd, const Address& addr) {
     struct sockaddr_in sockAddr = addr.sockAddr();
-    int ret = ::connect(sockFd, (struct sockaddr*)&sockAddr, sizeof(sockAddr));
-    if (ret < 0) {
-        int err = errno;
-        return err;
-    } else {
-        SockUtil::setNoDelay(sockFd, true);
-        return ret;
+    auto tryCnt = 0;
+    while (true) {
+        tryCnt += 1;
+        int ret = ::connect(sockFd, (struct sockaddr*)&sockAddr, sizeof(sockAddr));
+        if (ret >= 0) {
+            SockUtil::setNoDelay(sockFd, true);
+            return 0;
+        }
+#ifdef WIN32
+        auto err = WSAGetLastError();
+        if (err == WSAEISCONN) {   //成功
+            return 0;
+        }
+        if (err == WSAEWOULDBLOCK || err == WSAEINPROGRESS || err == WSAEINVAL || err == WSAEALREADY) { //重连
+#else
+        auto err = errno;
+        if (err == EISCONN) {  //成功
+            return 0;
+        }
+        if (err == EINPROGRESS || err == EWOULDBLOCK || err == EALREADY) {    //重连
+#endif
+            if (tryCnt <= 5) {
+                sleep();
+                continue;
+            }
+        }
+        LOG_ERROR("connect address %s:%d, fd: %d, error: %d => %s", addr.ipstr().c_str(), addr.port(), sockFd, err, errorMsg(err));
+        break;
     }
+    return -1;
 }
 
 int SockUtil::setNoDelay(int sockFd, bool on) {
@@ -192,5 +214,17 @@ int SockUtil::bindDevice(int sockFd, const string& device) {
     }
 #endif
     return 0;
+}
+
+void SockUtil::sleep(int mics) {
+#ifdef WIN32
+    if (mics < 1000) {
+        Sleep(1);
+    } else {
+        Sleep((uint32_t)(mics / 1000));
+    }
+#else
+    usleep(mics);
+#endif
 }
 }

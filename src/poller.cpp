@@ -14,7 +14,25 @@ using namespace std;
 namespace tnet {
 const int DefaultEventSize = 1024;
 const int MaxEventSize = 10240;
-bool Poller::m_binit = false;
+
+static bool binit = false;
+void platformInit() {
+    if (binit == false) {
+        binit = true;
+#ifdef WIN32
+        WSADATA wsaData;
+        WORD wMakekey = MAKEWORD(2, 0);
+        if (WSAStartup(wMakekey, &wsaData) != 0) {
+            LOG_ERROR("socket init WSAStartup failed");
+        }
+        if ((LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 0) &&
+            (LOBYTE(wsaData.wVersion) != 1 || HIBYTE(wsaData.wVersion) != 1)) {
+            WSACleanup();
+            LOG_ERROR("socket init WSACleanup failed");
+        }
+#endif
+    }
+}
 
 Poller::Poller(IOLoop* loop)
     : m_loop(loop) {
@@ -28,19 +46,7 @@ Poller::Poller(IOLoop* loop)
 #else
     FD_ZERO(&m_readfd);
     FD_ZERO(&m_writefd);
-    if (m_binit == false) {
-        m_binit = true;
-        WSADATA wsaData;
-        WORD wMakekey = MAKEWORD(2, 0);
-        if (WSAStartup(wMakekey, &wsaData) != 0) {
-            LOG_ERROR("socket init WSAStartup failed");
-        }
-        if ((LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 0) &&
-            (LOBYTE(wsaData.wVersion) != 1 || HIBYTE(wsaData.wVersion) != 1)) {
-            WSACleanup();
-            LOG_ERROR("socket init WSACleanup failed");
-        }
-    }
+    platformInit();
 #endif
 }
 

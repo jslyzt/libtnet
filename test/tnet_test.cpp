@@ -1,4 +1,5 @@
 #include "tnet_test.h"
+#include "tnet.h"
 
 TNetEnvironment::TNetEnvironment() {
 }
@@ -39,5 +40,6 @@ void TNetTest::TearDown()
 int main(int argc, char** argv) {
     testing::AddGlobalTestEnvironment(new TNetEnvironment);
     testing::InitGoogleTest(&argc, argv);
+    tnet::platformInit();
     return RUN_ALL_TESTS();
 }

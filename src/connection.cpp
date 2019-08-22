@@ -67,7 +67,6 @@ void Connection::connect(const Address& addr) {
         return;
     }
 
-    ConnEvent event = Conn_ConnectEvent;
     int err = SockUtil::connect(m_fd, addr);
     if (err < 0) {
         if (err == EINPROGRESS) {
@@ -83,7 +82,7 @@ void Connection::connect(const Address& addr) {
     updateActiveTime();
     ConnectionPtr_t conn = shared_from_this();
     m_loop->addHandler(m_fd, m_status == Connected ? TNET_READ : TNET_WRITE, std::bind(&Connection::onHandler, conn, _1, _2));
-    m_callback(conn, event, 0);
+    m_callback(conn, Conn_ConnectEvent, 0);
 }
 
 void Connection::onHandler(IOLoop* loop, int events) {
@@ -184,8 +183,10 @@ void Connection::handleWrite(const string& data) {
     iov[1].iov_len = data.size();
     n = writev(m_fd, iov, 2);
 #else
-    n = ::send(m_fd, m_sendBuffer.c_str(), (int)(m_sendBuffer.size()), 0);
-    if (data.empty() == false) {
+    if (m_sendBuffer.empty() == false) {
+        n = ::send(m_fd, m_sendBuffer.c_str(), (int)(m_sendBuffer.size()), 0);
+    }
+    if (data.empty() == false && n >= 0) {
         n += ::send(m_fd, data.c_str(), (int)(data.size()), 0);
     }
 #endif

@@ -24,6 +24,8 @@ public:
     static uint32_t getHostByName(const std::string& host);
 
     static int bindDevice(int sockFd, const std::string& device);
+
+    static void sleep(int mics = 500);
 };
 
 }

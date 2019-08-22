@@ -52,7 +52,7 @@ TEST_F(EchoTest, client) {
 
     conn->setEventCallback(std::bind(&echoc::onConnEvent, _1, _2, _3));
 
-    conn->connect(Address(11181));
+    conn->connect(Address("127.0.0.1", 11181));
 
     loop.start();
 }

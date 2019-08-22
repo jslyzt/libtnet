@@ -32,7 +32,6 @@ Notifier::~Notifier() {
 }
 
 void Notifier::start(IOLoop* loop) {
-    assert(m_fd > 0);
     if (m_running) {
         LOG_WARN("event was started");
         return;
@@ -44,7 +43,6 @@ void Notifier::start(IOLoop* loop) {
 }
 
 void Notifier::stop() {
-    assert(m_fd > 0);
     if (!m_running) {
         LOG_WARN("event was stopped");
         return;

@@ -42,7 +42,6 @@ private:
     fd_set  m_readfd;
     fd_set  m_writefd;
     std::set<int> m_sockets;
-    static bool m_binit;
 #endif
 };
 

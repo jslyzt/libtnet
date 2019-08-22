@@ -80,4 +80,6 @@ typedef std::function<void (const TimerPtr_t&)> TimerHandler_t;
 typedef std::function<void (const SignalerPtr_t&, int)> SignalHandler_t;
 typedef std::function<void (const NotifierPtr_t&)> NotifierHandler_t;
 typedef std::function<void (const TimingWheelPtr_t&)> TimingWheelHandler_t;
+
+void platformInit();
 }

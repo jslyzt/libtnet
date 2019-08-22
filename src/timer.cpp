@@ -52,7 +52,7 @@ Timer::~Timer() {
 }
 
 void Timer::start(IOLoop* loop) {
-    assert(m_fd > 0);
+    //assert(m_fd > 0);
     if (m_running) {
         LOG_WARN("timer was started");
         return;

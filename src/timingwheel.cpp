@@ -16,10 +16,8 @@ TimingWheel::TimingWheel(int interval, int maxBuckets)
     , m_maxBuckets(maxBuckets)
     , m_nextBucket(0) {
     m_maxTimeout = interval * maxBuckets;
-
-    m_timer = std::make_shared<Timer>(std::bind(&TimingWheel::onTimer, this, _1), interval, 0);
-
     m_buckets.resize(maxBuckets);
+    m_timer = std::make_shared<Timer>(std::bind(&TimingWheel::onTimer, this, _1), interval, 0);
 }
 
 TimingWheel::~TimingWheel() {
@@ -55,7 +53,6 @@ void TimingWheel::onTimer(const TimerPtr_t& timer) {
     for (auto iter = chans.begin(); iter != chans.end(); ++iter) {
         (*iter)(shared_from_this());
     }
-
     chans.clear();
 
     m_nextBucket = (m_nextBucket + 1) % m_maxBuckets;
