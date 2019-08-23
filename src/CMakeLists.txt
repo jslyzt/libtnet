@@ -5,19 +5,14 @@ file(GLOB
 	"*.cpp"
 	"http/*.c"
 	"http/*.cpp"
+	"polarssl/*.c"
 )
 add_library(tnet ${TNET_FILES})
 
-
-file(GLOB
-	SSL_FILES
-	"polarssl/*.c"
-)
-add_library(polarssl ${SSL_FILES})
 
 file(GLOB
 	REDIS_FILES
 	"redis/*.c"
 	"redis/*.cpp"
 )
-add_library(redis ${SRC_FILES})
+add_library(redis ${REDIS_FILES})
