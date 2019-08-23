@@ -15,18 +15,5 @@ go to root source, then
 # Requirement
 
 - gcc >= 4.4, supports c++ 0x
-- linux, supports eventfd, signalfd and timerfd 
-
-# Not supported!
-
-- unix socket domain
-- ssl
-
-# Other
-
-please see [wiki](https://github.com/siddontang/libtnet/wiki) for more information. If you have any problem when using libtnet, you can contact me through below.
-
-- Gmail: siddontang@gmail.com
-- Twitter: siddontang
-
-I thank you very much for your feedback!
+- linux, supports eventfd, signalfd and timerfd
+- windows >= vs 2013 use select, only for debug
