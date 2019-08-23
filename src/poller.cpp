@@ -69,10 +69,11 @@ int Poller::add(int fd, int events) {
     event.data.u64 = 0;
     event.data.fd = fd;
     event.events = (events & TNET_READ ? EPOLLIN : 0) | (events & TNET_WRITE ? EPOLLOUT : 0);
-    int ret = epoll_ctl(m_fd, EPOLL_CTL_ADD, fd, &event);
-    if (ret < 0) {
-        LOG_ERROR("epoll_ctl add error %s", errorMsg(errno));
-        return -1;
+    if (epoll_ctl(m_fd, EPOLL_CTL_ADD, fd, &event) < 0) {
+        if(epoll_ctl(m_fd, EPOLL_CTL_MOD, fd, &event) < 0) {
+            LOG_ERROR("epoll_ctl add error %s", errorMsg(errno));
+            return -1;
+        }
     }
 #else
     m_sockets.insert(fd);
@@ -103,11 +104,7 @@ int Poller::remove(int fd) {
 #ifndef WIN32
     assert(m_fd > 0);
 
-    int ret = epoll_ctl(m_fd, EPOLL_CTL_DEL, fd, 0);
-    if (ret < 0) {
-        LOG_ERROR("epoll_ctl remove error %s", errorMsg(errno));
-        return -1;
-    }
+    epoll_ctl(m_fd, EPOLL_CTL_DEL, fd, 0);
 #else
     m_sockets.erase(fd);
 #endif
