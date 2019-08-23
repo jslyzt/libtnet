@@ -4,7 +4,7 @@
 #include <map>
 #include <string.h>
 
-#include "tnet.h"
+#include "../tnet.h"
 
 extern "C"
 {

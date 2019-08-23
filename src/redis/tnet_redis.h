@@ -2,8 +2,7 @@
 
 #include <vector>
 #include <string>
-
-#include "tnet.h"
+#include "../tnet.h"
 
 extern "C"
 {
