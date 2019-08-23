@@ -2,9 +2,6 @@
 #include <ctype.h>
 #include <string.h>
 
-void close(int) {
-}
-
 char* strcasestr(const char* s, const char* find) {
     char c, sc;
     size_t len;

@@ -25,8 +25,7 @@ namespace ws {
             const string& str = *(const string*)context;
             LOG_INFO("websocket message %s", str.c_str());
             conn->send("hello " + str);
-        }
-                              break;
+        } break;
         case Ws_PongEvent:
             LOG_INFO("websocket pong");
             break;

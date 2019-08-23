@@ -79,9 +79,6 @@
     <ClCompile Include="..\..\src\tprocess.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\win_utils\fork.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\win_utils\utils.cpp">
       <Filter>utils</Filter>
     </ClCompile>

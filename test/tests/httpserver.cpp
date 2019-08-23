@@ -44,7 +44,7 @@ TEST_F(HttpTest, server) {
 
     HttpServer httpd(&s);
 
-    httpd.setHttpCallback("/", std::bind(&http::onHandler, _1, _2));
+    httpd.setHttpCallback("/abc", std::bind(&http::onHandler, _1, _2));
 
     httpd.listen(Address(11181));
 

@@ -78,11 +78,15 @@ void TcpServer::onRun() {
 }
 
 void TcpServer::start(size_t maxProcess) {
+#ifdef WIN32
+    run();
+#else
     if (maxProcess > 1) {
         m_process->wait(maxProcess, std::bind(&TcpServer::run, this));
     } else {
         run();
     }
+#endif
 }
 
 void TcpServer::onStop() {
@@ -95,7 +99,7 @@ void TcpServer::onStop() {
     m_idleWheel->stop();
     m_signaler->stop();
     for (auto con : m_acceptors) {
-        if(con != nullptr) {
+        if (con != nullptr) {
             con->stop();
         }
     }

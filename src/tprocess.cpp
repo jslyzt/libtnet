@@ -17,17 +17,21 @@
 using namespace std;
 
 namespace tnet {
+
 Process::Process()
     : m_running(false) {
     m_main = getpid();
-    vector<int> signums{SIGTERM};
+#ifndef WIN32
+    vector<int> signums{ SIGTERM };
     m_fd = Signaler::createSignalFd(signums);
+#endif
 }
 
 Process::~Process() {
 }
 
 pid_t Process::create() {
+#ifndef WIN32
     pid_t pid = fork();
     if (pid < 0) {
         LOG_ERROR("fork error %s", errorMsg(errno));
@@ -41,11 +45,13 @@ pid_t Process::create() {
         //parent
         m_children.insert(pid);
     }
+#endif
     return 0;
 }
 
 void Process::wait(size_t num, const ProcessCallback_t& callback) {
     m_running = true;
+#ifndef WIN32
     for (size_t i = 0; i < num; ++i) {
         auto pid = create();
         if (pid != 0) {
@@ -53,16 +59,19 @@ void Process::wait(size_t num, const ProcessCallback_t& callback) {
             return;
         }
     }
-#ifndef WIN32
+
     while (!m_children.empty()) {
         int status = 0;
         pid_t pid;
         if ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
             m_children.erase(pid);
+
             if (!m_running) {
                 continue;
             }
+
             LOG_INFO("child was dead, restart it");
+
             if (create() != 0) {
                 callback();
                 return;
@@ -73,24 +82,16 @@ void Process::wait(size_t num, const ProcessCallback_t& callback) {
             continue;
         }
     }
-#else
-    if(m_children.empty() == false) {
-        auto hd = OpenProcess(PROCESS_ALL_ACCESS, FALSE, *(m_children.begin()));
-        if (hd != nullptr) {
-            WaitForSingleObject(hd, INFINITE);
-            CloseHandle(hd);
-        }
-    }
 #endif
     return;
 }
 
 void Process::stop() {
     LOG_INFO("stop child process");
+#ifndef WIN32
     m_running = false;
-    for (auto pid : m_children) {
-        kill(pid, SIGTERM);
-    }
+    for_each_all(m_children, std::bind(::kill, _1, SIGTERM));
+#endif
 }
 
 void Process::checkStop() {

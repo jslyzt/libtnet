@@ -37,7 +37,6 @@
     <ClCompile Include="..\..\src\tcpserver.cpp" />
     <ClCompile Include="..\..\src\timer.cpp" />
     <ClCompile Include="..\..\src\timingwheel.cpp" />
-    <ClCompile Include="..\..\src\win_utils\fork.cpp" />
     <ClCompile Include="..\..\src\win_utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>

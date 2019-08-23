@@ -28,20 +28,14 @@ namespace ws {
             break;
         case Ws_MessageEvent: {
             const string& msg = *(const string*)context;
-
             LOG_INFO("message %s", msg.c_str());
-
             char buf[1024];
             int n = snprintf(buf, sizeof(buf), "Hello World %d", i++);
-
             conn->send(string(buf, n), std::bind(&onWriteComplete, i));
-
             if (i > 10) {
                 conn->close();
             }
-
-        }
-                              break;
+        } break;
         case Ws_ErrorEvent:
             LOG_INFO("error");
             break;
