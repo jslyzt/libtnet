@@ -147,7 +147,7 @@ LARGE_INTEGER getFILETIMEoffset() {
     return (t);
 }
 
-int Timer::clock_gettime(int X, timeval* tv) {
+int Timer::clock_gettime(int X, timespec* tv) {
     LARGE_INTEGER t;
     FILETIME f;
     static LARGE_INTEGER offset;
@@ -181,6 +181,12 @@ int Timer::clock_gettime(int X, timeval* tv) {
     tv->tv_sec = (long)(t.QuadPart / 1000000);
     tv->tv_usec = t.QuadPart % 1000000;
     return (0);
+}
+
+#else
+
+int Timer::clock_gettime(int X, timespec* tv) {
+    return ::clock_gettime(X, tv);
 }
 
 #endif

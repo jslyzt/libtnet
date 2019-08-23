@@ -90,7 +90,9 @@ void Process::stop() {
     LOG_INFO("stop child process");
 #ifndef WIN32
     m_running = false;
-    for_each_all(m_children, std::bind(::kill, _1, SIGTERM));
+    for (auto pid : m_children) {
+        ::kill(pid, SIGTERM);
+    }
 #endif
 }
 

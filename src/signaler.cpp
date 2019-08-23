@@ -7,7 +7,6 @@
 #include <assert.h>
 #ifndef WIN32
 #include <sys/signalfd.h>
-#include <unistd.h>
 #endif
 
 #include "log.h"

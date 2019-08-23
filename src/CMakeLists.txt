@@ -1,6 +1,6 @@
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
-file(GLOB_RECURSE
+file(GLOB
 	SRC_FILES
 	"*.cpp"
 	"http/*.c"

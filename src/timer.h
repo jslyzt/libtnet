@@ -27,12 +27,9 @@ public:
 
     bool isRepeated() { return m_repeated; }
 
-#ifdef WIN32
-    static int clock_gettime(int X, timeval* tv);
-#endif
-
     void onTimer(IOLoop* loop, int events);
 
+    static int clock_gettime(int X, timespec* tv);
 private:
     void initTimer(int repeat, int after);
 

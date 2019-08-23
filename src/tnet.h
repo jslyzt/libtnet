@@ -3,7 +3,9 @@
 #include <memory>
 #include <functional>
 #include <stdint.h>
-
+#ifndef WIN32
+#include <unistd.h>
+#endif
 #include "nocopyable.h"
 
 using namespace std::placeholders;
