@@ -19,12 +19,12 @@ namespace echoc {
             LOG_INFO("echo %s", string(buffer->buffer, buffer->count).c_str());
 
             char buf[1024];
-            int n = snprintf(buf, sizeof(buf), "hello world %d", i);
+            int n = snprintf(buf, sizeof(buf), "hello world %d", ++i);
             conn->send(string(buf, n));
 
-            if (++i > 10) {
-                conn->shutDown();
-            }
+            //if (++i > 10) {
+            //    conn->shutDown();
+            //}
         } break;
         case Conn_CloseEvent:
             LOG_INFO("close");
@@ -35,6 +35,10 @@ namespace echoc {
         case Conn_ConnectEvent:
             LOG_INFO("connect");
             conn->send("hello world");
+            break;
+        case Conn_ConnFailEvent:
+            LOG_INFO("connect failed");
+            exit(0);
             break;
         default:
             break;

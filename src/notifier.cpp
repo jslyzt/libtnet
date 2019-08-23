@@ -39,7 +39,9 @@ void Notifier::start(IOLoop* loop) {
 
     m_running = true;
     m_loop = loop;
-    m_loop->addHandler(m_fd, TNET_READ, std::bind(&Notifier::onEvent, shared_from_this(), _1, _2));
+    if (m_fd > 0) {
+        m_loop->addHandler(m_fd, TNET_READ, std::bind(&Notifier::onEvent, shared_from_this(), _1, _2));
+    }
 }
 
 void Notifier::stop() {
@@ -49,7 +51,9 @@ void Notifier::stop() {
     }
 
     m_running = false;
-    m_loop->removeHandler(m_fd);
+    if (m_fd > 0) {
+        m_loop->removeHandler(m_fd);
+    }
 }
 
 void Notifier::notify() {

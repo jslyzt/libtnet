@@ -48,7 +48,6 @@ int TcpServer::listen(const Address& addr, const ConnEventCallback_t& callback) 
     if (acceptor->listen(addr) < 0) {
         return -1;
     }
-
     m_acceptors.push_back(acceptor);
     return 0;
 }

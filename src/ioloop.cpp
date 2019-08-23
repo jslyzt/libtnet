@@ -39,6 +39,7 @@ IOLoop::IOLoop() {
 IOLoop::~IOLoop() {
     delete m_poller;
     for_each(m_events.begin(), m_events.end(), default_delete<IOEvent>());
+    m_delevents.clear();
 }
 
 void IOLoop::start() {
@@ -57,6 +58,7 @@ void IOLoop::run() {
     while (m_running) {
         m_poller->poll(MaxPollWaitTime, m_events);
         handleCallbacks();
+        checkDelEvents();
     }
 
     LOG_INFO("loop stop");
@@ -101,10 +103,18 @@ int IOLoop::removeHandler(int fd) {
         LOG_INFO("invalid fd %d", fd);
         return -1;
     }
-    m_poller->remove(fd);
+    m_delevents.push_back(fd);
+    return 0;
+}
 
+int IOLoop::trueRemoveHandler(int fd) {
+    if (m_events.size() <= fd || m_events[fd] == nullptr) {
+        LOG_INFO("invalid fd %d", fd);
+        return -1;
+    }
+    m_poller->remove(fd);
     delete m_events[fd];
-    m_events[fd] = NULL;
+    m_events[fd] = nullptr;
     return 0;
 }
 
@@ -125,6 +135,13 @@ void IOLoop::addCallback(const Callback_t& callback) {
         m_callbacks.push_back(callback);
     }
     m_notifier->notify();
+}
+
+void IOLoop::checkDelEvents() {
+    for (auto fd : m_delevents) {
+        trueRemoveHandler(fd);
+    }
+    m_delevents.clear();
 }
 
 void IOLoop::handleCallbacks() {

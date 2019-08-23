@@ -12,7 +12,6 @@ size_t HttpConnector::ms_maxHeaderSize = 80 * 1024;
 size_t HttpConnector::ms_maxBodySize = 10 * 1024 * 1024;
 
 void dummyCallback(const HttpConnectorPtr_t&, const HttpResponse&, ResponseEvent) {
-
 }
 
 HttpConnector::HttpConnector()

@@ -35,9 +35,9 @@ enum {
 };
 
 enum ConnEvent {
-    Conn_EstablishedEvent,
+    Conn_ListenEvent,
+    Conn_ConnFailEvent,
     Conn_ConnectEvent,
-    Conn_ConnectingEvent,
     Conn_ReadEvent,
     Conn_WriteCompleteEvent,
     Conn_ErrorEvent,

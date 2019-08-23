@@ -39,13 +39,10 @@ int HttpServer::listen(const Address& addr) {
 
 void HttpServer::onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
     switch (event) {
-        case Conn_EstablishedEvent: {
-            HttpConnectionPtr_t httpConn = std::make_shared<HttpConnection>(conn,
-                                           std::bind(&HttpServer::onRequest, this, _1, _2, _3, _4));
-
+    case Conn_ListenEvent: {
+            HttpConnectionPtr_t httpConn = std::make_shared<HttpConnection>(conn, std::bind(&HttpServer::onRequest, this, _1, _2, _3, _4));
             conn->setEventCallback(std::bind(&HttpConnection::onConnEvent, httpConn, _1, _2, _3));
-        }
-        break;
+        } break;
         default:
             LOG_INFO("error when enter this");
             return;

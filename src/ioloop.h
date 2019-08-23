@@ -20,6 +20,7 @@ public:
     int addHandler(int fd, int events, const IOHandler_t& handler);
     int updateHandler(int fd, int events);
     int removeHandler(int fd);
+    int trueRemoveHandler(int fd);
 
     //after is milliseconds
     TimerPtr_t runAfter(int after, const Callback_t& callback);
@@ -39,12 +40,14 @@ private:
 
     void handleCallbacks();
 
+    void checkDelEvents();
 private:
     int m_pollFd;
 
     bool m_running;
 
     std::vector<IOEvent*> m_events;
+    std::vector<int> m_delevents;
 
     Poller* m_poller;
 

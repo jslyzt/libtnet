@@ -58,7 +58,7 @@ void Connection::onEstablished() {
     ConnectionPtr_t conn = shared_from_this();
     m_loop->addHandler(m_fd, TNET_READ, std::bind(&Connection::onHandler, conn, _1, _2));
 
-    m_callback(conn, Conn_EstablishedEvent, 0);
+    m_callback(conn, Conn_ListenEvent, 0);
 }
 
 void Connection::connect(const Address& addr) {
@@ -69,12 +69,8 @@ void Connection::connect(const Address& addr) {
 
     int err = SockUtil::connect(m_fd, addr);
     if (err < 0) {
-        if (err == EINPROGRESS) {
-            m_status = Connecting;
-        } else {
-            handleError();
-            return;
-        }
+        m_callback(shared_from_this(), Conn_ConnFailEvent, 0);
+        return;
     } else {
         m_status = Connected;
     }
@@ -199,8 +195,7 @@ void Connection::handleWrite(const string& data) {
     } else if (n < 0) {
         int err = errno;
         LOG_INFO("write error %s", errorMsg(err));
-        if (err == EAGAIN || err == EWOULDBLOCK) {
-            //try write later, can enter here?
+        if (err == EAGAIN || err == EWOULDBLOCK) { //try write later, can enter here?
             m_sendBuffer.append(data);
             m_loop->updateHandler(m_fd, TNET_READ | TNET_WRITE);
             return;
