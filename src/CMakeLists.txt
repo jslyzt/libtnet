@@ -15,4 +15,4 @@ file(GLOB
 	"redis/*.c"
 	"redis/*.cpp"
 )
-add_library(redis ${REDIS_FILES})
+add_library(tredis ${REDIS_FILES})

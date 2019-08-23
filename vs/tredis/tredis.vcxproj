@@ -11,19 +11,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\polarssl\base64.c" />
-    <ClCompile Include="..\..\src\polarssl\md5.c" />
-    <ClCompile Include="..\..\src\polarssl\sha1.c" />
+    <ClCompile Include="..\..\src\redis\hiredis.c" />
+    <ClCompile Include="..\..\src\redis\redisclient.cpp" />
+    <ClCompile Include="..\..\src\redis\redisconnection.cpp" />
+    <ClCompile Include="..\..\src\redis\redistrans.cpp" />
+    <ClCompile Include="..\..\src\redis\sds.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\polarssl\base64.h" />
-    <ClInclude Include="..\..\src\polarssl\md5.h" />
-    <ClInclude Include="..\..\src\polarssl\sha1.h" />
+    <ClInclude Include="..\..\src\redis\hiredis.h" />
+    <ClInclude Include="..\..\src\redis\redisclient.h" />
+    <ClInclude Include="..\..\src\redis\redisconnection.h" />
+    <ClInclude Include="..\..\src\redis\redistrans.h" />
+    <ClInclude Include="..\..\src\redis\sds.h" />
+    <ClInclude Include="..\..\src\redis\tnet_redis.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{FE92569F-93FD-47E5-84A5-7140B337D6C3}</ProjectGuid>
+    <ProjectGuid>{A6485BCD-A345-4CC1-A1AC-1CF3357C460A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SearchLib</RootNamespace>
+    <ProjectName>tredis</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

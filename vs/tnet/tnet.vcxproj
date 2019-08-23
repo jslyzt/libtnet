@@ -11,24 +11,83 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\redis\hiredis.c" />
-    <ClCompile Include="..\..\src\redis\redisclient.cpp" />
-    <ClCompile Include="..\..\src\redis\redisconnection.cpp" />
-    <ClCompile Include="..\..\src\redis\redistrans.cpp" />
-    <ClCompile Include="..\..\src\redis\sds.c" />
+    <ClCompile Include="..\..\src\acceptor.cpp" />
+    <ClCompile Include="..\..\src\address.cpp" />
+    <ClCompile Include="..\..\src\connection.cpp" />
+    <ClCompile Include="..\..\src\http\httpclient.cpp" />
+    <ClCompile Include="..\..\src\http\httpconnection.cpp" />
+    <ClCompile Include="..\..\src\http\httpconnector.cpp" />
+    <ClCompile Include="..\..\src\http\httpparser.cpp" />
+    <ClCompile Include="..\..\src\http\httprequest.cpp" />
+    <ClCompile Include="..\..\src\http\httpresponse.cpp" />
+    <ClCompile Include="..\..\src\http\httpserver.cpp" />
+    <ClCompile Include="..\..\src\http\httputil.cpp" />
+    <ClCompile Include="..\..\src\http\http_parser.c" />
+    <ClCompile Include="..\..\src\http\wsclient.cpp" />
+    <ClCompile Include="..\..\src\http\wsconnection.cpp" />
+    <ClCompile Include="..\..\src\http\wsutil.cpp" />
+    <ClCompile Include="..\..\src\ioloop.cpp" />
+    <ClCompile Include="..\..\src\log.cpp" />
+    <ClCompile Include="..\..\src\notifier.cpp" />
+    <ClCompile Include="..\..\src\polarssl\base64.c" />
+    <ClCompile Include="..\..\src\polarssl\md5.c" />
+    <ClCompile Include="..\..\src\polarssl\sha1.c" />
+    <ClCompile Include="..\..\src\poller.cpp" />
+    <ClCompile Include="..\..\src\tprocess.cpp" />
+    <ClCompile Include="..\..\src\signaler.cpp" />
+    <ClCompile Include="..\..\src\sockutil.cpp" />
+    <ClCompile Include="..\..\src\stringutil.cpp" />
+    <ClCompile Include="..\..\src\tcpserver.cpp" />
+    <ClCompile Include="..\..\src\timer.cpp" />
+    <ClCompile Include="..\..\src\timingwheel.cpp" />
+    <ClCompile Include="..\..\src\win_utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\redis\hiredis.h" />
-    <ClInclude Include="..\..\src\redis\redisclient.h" />
-    <ClInclude Include="..\..\src\redis\redisconnection.h" />
-    <ClInclude Include="..\..\src\redis\redistrans.h" />
-    <ClInclude Include="..\..\src\redis\sds.h" />
-    <ClInclude Include="..\..\src\redis\tnet_redis.h" />
+    <ClInclude Include="..\..\src\acceptor.h" />
+    <ClInclude Include="..\..\src\address.h" />
+    <ClInclude Include="..\..\src\connection.h" />
+    <ClInclude Include="..\..\src\connector.h" />
+    <ClInclude Include="..\..\src\http\httpclient.h" />
+    <ClInclude Include="..\..\src\http\httpconnection.h" />
+    <ClInclude Include="..\..\src\http\httpconnector.h" />
+    <ClInclude Include="..\..\src\http\httpparser.h" />
+    <ClInclude Include="..\..\src\http\httprequest.h" />
+    <ClInclude Include="..\..\src\http\httpresponse.h" />
+    <ClInclude Include="..\..\src\http\httpserver.h" />
+    <ClInclude Include="..\..\src\http\httputil.h" />
+    <ClInclude Include="..\..\src\http\http_parser.h" />
+    <ClInclude Include="..\..\src\http\tnet_http.h" />
+    <ClInclude Include="..\..\src\http\wsclient.h" />
+    <ClInclude Include="..\..\src\http\wsconnection.h" />
+    <ClInclude Include="..\..\src\http\wsutil.h" />
+    <ClInclude Include="..\..\src\ioevent.h" />
+    <ClInclude Include="..\..\src\ioloop.h" />
+    <ClInclude Include="..\..\src\log.h" />
+    <ClInclude Include="..\..\src\nocopyable.h" />
+    <ClInclude Include="..\..\src\notifier.h" />
+    <ClInclude Include="..\..\src\polarssl\base64.h" />
+    <ClInclude Include="..\..\src\polarssl\md5.h" />
+    <ClInclude Include="..\..\src\polarssl\sha1.h" />
+    <ClInclude Include="..\..\src\poller.h" />
+    <ClInclude Include="..\..\src\tprocess.h" />
+    <ClInclude Include="..\..\src\signaler.h" />
+    <ClInclude Include="..\..\src\sockutil.h" />
+    <ClInclude Include="..\..\src\spinlock.h" />
+    <ClInclude Include="..\..\src\stringutil.h" />
+    <ClInclude Include="..\..\src\tcpserver.h" />
+    <ClInclude Include="..\..\src\timer.h" />
+    <ClInclude Include="..\..\src\timingwheel.h" />
+    <ClInclude Include="..\..\src\tnet.h" />
+    <ClInclude Include="..\..\src\win_utils\utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\connector.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{A6485BCD-A345-4CC1-A1AC-1CF3357C460A}</ProjectGuid>
+    <ProjectGuid>{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SearchLib</RootNamespace>
+    <ProjectName>tnet</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

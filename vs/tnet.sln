@@ -5,22 +5,16 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{271F5A3B-4416-4CE7-902A-23E9501D9E2C}"
 	ProjectSection(ProjectDependencies) = postProject
-		{FE92569F-93FD-47E5-84A5-7140B337D6C3} = {FE92569F-93FD-47E5-84A5-7140B337D6C3}
 		{A6485BCD-A345-4CC1-A1AC-1CF3357C460A} = {A6485BCD-A345-4CC1-A1AC-1CF3357C460A}
 		{EF8256F2-7862-4AEF-87A2-3C0D56278D2A} = {EF8256F2-7862-4AEF-87A2-3C0D56278D2A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lib", "lib\lib.vcxproj", "{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tnet", "tnet\tnet.vcxproj", "{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A6485BCD-A345-4CC1-A1AC-1CF3357C460A} = {A6485BCD-A345-4CC1-A1AC-1CF3357C460A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "polarssl", "polarssl\polarssl.vcxproj", "{FE92569F-93FD-47E5-84A5-7140B337D6C3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{EF8256F2-7862-4AEF-87A2-3C0D56278D2A} = {EF8256F2-7862-4AEF-87A2-3C0D56278D2A}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "redis", "redis\redis.vcxproj", "{A6485BCD-A345-4CC1-A1AC-1CF3357C460A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tredis", "tredis\tredis.vcxproj", "{A6485BCD-A345-4CC1-A1AC-1CF3357C460A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +30,6 @@ Global
 		{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}.Debug|x64.Build.0 = Debug|x64
 		{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}.Release|x64.ActiveCfg = Release|x64
 		{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}.Release|x64.Build.0 = Release|x64
-		{FE92569F-93FD-47E5-84A5-7140B337D6C3}.Debug|x64.ActiveCfg = Debug|x64
-		{FE92569F-93FD-47E5-84A5-7140B337D6C3}.Debug|x64.Build.0 = Debug|x64
-		{FE92569F-93FD-47E5-84A5-7140B337D6C3}.Release|x64.ActiveCfg = Release|x64
-		{FE92569F-93FD-47E5-84A5-7140B337D6C3}.Release|x64.Build.0 = Release|x64
 		{A6485BCD-A345-4CC1-A1AC-1CF3357C460A}.Debug|x64.ActiveCfg = Debug|x64
 		{A6485BCD-A345-4CC1-A1AC-1CF3357C460A}.Debug|x64.Build.0 = Debug|x64
 		{A6485BCD-A345-4CC1-A1AC-1CF3357C460A}.Release|x64.ActiveCfg = Release|x64

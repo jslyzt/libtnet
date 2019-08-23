@@ -82,6 +82,15 @@
     <ClCompile Include="..\..\src\win_utils\utils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\polarssl\base64.c">
+      <Filter>ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\polarssl\md5.c">
+      <Filter>ssl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\polarssl\sha1.c">
+      <Filter>ssl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\http\http_parser.h">
@@ -183,6 +192,15 @@
     <ClInclude Include="..\..\src\win_utils\utils.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\polarssl\base64.h">
+      <Filter>ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\polarssl\md5.h">
+      <Filter>ssl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\polarssl\sha1.h">
+      <Filter>ssl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="http">
@@ -193,6 +211,9 @@
     </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{8adc5d4a-b86f-4f0a-acee-eb65fa05af3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ssl">
+      <UniqueIdentifier>{aab27b7f-75a7-44c6-a147-328f9019d869}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
