@@ -81,6 +81,7 @@
     <ProjectGuid>{EF8256F2-7862-4AEF-87A2-3C0D56278D2A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SearchLib</RootNamespace>
+    <ProjectName>tnet</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

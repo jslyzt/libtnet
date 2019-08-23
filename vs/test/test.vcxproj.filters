@@ -45,5 +45,9 @@
     <ClCompile Include="..\..\test\tests\wsserver.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\test\tnet_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\test\tnet_test.h" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,8 @@ file(GLOB
 
 add_executable(test ${SRC_FILES})
 target_link_libraries(test
+	-lpolarssl
+	-lredis
 	-ltnet
 	-lgmock
 	-lpthread
