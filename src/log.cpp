@@ -111,6 +111,18 @@ void Log::log(const char* level, const char* file, const char* function, int lin
     time_t now = time(NULL);
     strftime(buf, sizeof(buf), DateTimeFormat, gmtime(&now));
 
+    if (file != nullptr) {
+        int pos = 0, fpos = 0;
+        while (*file != 0) {
+            pos++;
+            if (*file == '\\' || *file == '/') {
+                fpos = pos;
+            }
+        }
+        if (fpos >= 0 && fpos < pos) {
+            file = file + fpos;
+        }
+    }
     fprintf(m_fd, "%s %s [%d] %s %s:%d %s\n", buf, level, getpid(), function, file, line, msg);
 }
 }

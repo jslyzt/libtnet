@@ -65,7 +65,7 @@ void TcpServer::run() {
 }
 
 void TcpServer::onRun() {
-    LOG_INFO("tcp server on run");
+    LOG_TRACE("tcp server on run");
 
     for_each(m_acceptors.begin(), m_acceptors.end(), std::bind(&Acceptor::start, _1, m_loop));
 
@@ -91,7 +91,7 @@ void TcpServer::start(size_t maxProcess) {
 }
 
 void TcpServer::onStop() {
-    LOG_INFO("tcp server on stop");
+    LOG_TRACE("tcp server on stop");
     if (!m_running) {
         return;
     }
@@ -108,7 +108,7 @@ void TcpServer::onStop() {
 }
 
 void TcpServer::stop() {
-    LOG_INFO("stop server");
+    LOG_TRACE("stop server");
     m_process->stop();
     onStop();
 }

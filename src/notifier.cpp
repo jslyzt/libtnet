@@ -25,7 +25,7 @@ Notifier::Notifier(const NotifierHandler_t& handler)
 }
 
 Notifier::~Notifier() {
-    LOG_INFO("destroyed %d", m_fd);
+    //LOG_INFO("destroyed %d", m_fd);
 #ifndef WIN32
     if (m_fd > 0) {
         close(m_fd);

@@ -33,7 +33,7 @@ Connection::Connection(IOLoop* loop, int fd)
 }
 
 Connection::~Connection() {
-    LOG_INFO("connection destroyed %d", m_fd);
+    //LOG_INFO("connection destroyed %d", m_fd);
 }
 
 void Connection::clearEventCallback() {
@@ -146,8 +146,7 @@ void Connection::handleRead() {
         return;
     } else {
         int err = errno;
-        if (err == EAGAIN || err == EWOULDBLOCK) {
-            //try write later, can enter here?
+        if (err == EAGAIN || err == EWOULDBLOCK) { //try write later, can enter here?
             LOG_INFO("read %s", errorMsg(err));
             return;
         }

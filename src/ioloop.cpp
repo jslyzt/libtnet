@@ -62,7 +62,7 @@ void IOLoop::run() {
         checkDelEvents();
     }
 
-    LOG_INFO("loop stop");
+    LOG_TRACE("loop stop");
     m_notifier->stop();
 }
 

@@ -43,7 +43,7 @@ Timer::Timer(const TimerHandler_t& handler, int repeat, int after)
 }
 
 Timer::~Timer() {
-    LOG_INFO("destroyed %d", m_fd);
+    //LOG_TRACE("destroyed %d", m_fd);
     if (m_fd > 0) {
 #ifndef WIN32
         close(m_fd);
@@ -60,7 +60,7 @@ void Timer::start(IOLoop* loop) {
         return;
     }
 
-    LOG_INFO("start timer %d", m_fd);
+    LOG_TRACE("start timer %d", m_fd);
 
     m_loop = loop;
     m_running = true;

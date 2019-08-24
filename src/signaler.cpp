@@ -35,7 +35,7 @@ Signaler::Signaler(const vector<int>& signums, const SignalHandler_t& handler)
 }
 
 Signaler::~Signaler() {
-    LOG_INFO("destroyed %d", m_fd);
+    //LOG_INFO("destroyed %d", m_fd);
     if (m_fd > 0) {
 #ifndef WIN32
         close(m_fd);
@@ -71,7 +71,7 @@ void Signaler::start(IOLoop* loop) {
             return;
         }
 
-        LOG_INFO("start signaler %d", m_fd);
+        LOG_TRACE("start signaler %d", m_fd);
         m_running = true;
         m_loop = loop;
         m_loop->addHandler(m_fd, TNET_READ, std::bind(&Signaler::onSignal, shared_from_this(), _1, _2));
@@ -85,7 +85,7 @@ void Signaler::stop() {
             return;
         }
 
-        LOG_INFO("stop signaler %d", m_fd);
+        LOG_TRACE("stop signaler %d", m_fd);
         m_running = false;
         m_loop->removeHandler(m_fd);
     }

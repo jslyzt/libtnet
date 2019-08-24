@@ -81,7 +81,7 @@ void Acceptor::stop() {
 
     m_running = false;
 
-    LOG_INFO("stop %d", m_sockFd);
+    LOG_TRACE("stop %d", m_sockFd);
     m_loop->removeHandler(m_sockFd);
 }
 
