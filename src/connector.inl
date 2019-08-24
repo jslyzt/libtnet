@@ -25,7 +25,8 @@ int Connector<Derived>::connect(IOLoop* loop, const Address& addr, const Connect
 
     ConnectionPtr_t conn = std::make_shared<Connection>(loop, fd);
     m_conn = conn;
-    conn->setEventCallback(std::bind(&Connector<Derived>::onConnConnectEvent, this->shared_from_this(), _1, _2, _3, callback));
+    conn->setEventCallback(std::bind(&Connector<Derived>::onConnConnectEvent, this->shared_from_this(), 
+        std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, callback));
     conn->connect(addr);
     return 0;
 }
@@ -35,7 +36,8 @@ void Connector<Derived>::onConnConnectEvent(const ConnectionPtr_t& conn, ConnEve
     switch (event) {
         case Conn_ConnectEvent: {
             ConnectCallback_t cb = std::move(callback);
-            conn->setEventCallback(std::bind(&Connector<Derived>::onConnEvent, this->shared_from_this(), _1, _2, _3));
+            conn->setEventCallback(std::bind(&Connector<Derived>::onConnEvent, this->shared_from_this(), 
+                std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
             cb(this->shared_from_this(), true);
         } break;
         default: {
