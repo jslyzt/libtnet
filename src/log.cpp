@@ -113,16 +113,16 @@ void Log::log(const char* level, const char* file, const char* function, int lin
 
     if (file != nullptr) {
         int pos = 0, fpos = 0;
-        while (*file != 0) {
+        while (*(file + pos) != 0) {
             pos++;
-            if (*file == '\\' || *file == '/') {
+            if (*(file + pos) == '\\' || *(file + pos) == '/') {
                 fpos = pos;
             }
         }
         if (fpos >= 0 && fpos < pos) {
-            file = file + fpos;
+            file = file + fpos + 1;
         }
     }
-    fprintf(m_fd, "%s %s [%d] %s %s:%d %s\n", buf, level, getpid(), function, file, line, msg);
+    fprintf(m_fd, "%s %s [%d] %s:%d[%s] %s\n", buf, level, getpid(), file, line, function, msg);
 }
 }
