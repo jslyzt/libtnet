@@ -11,6 +11,7 @@
 #include "connector.inl"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 static void dummyCallback(const RedisConnectionPtr_t&, const RedisReply&) {

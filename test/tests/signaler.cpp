@@ -9,6 +9,7 @@
 #include "../tnet_test.h"
 
 using namespace tnet;
+using namespace std::placeholders;
 using namespace std;
 
 namespace sig {

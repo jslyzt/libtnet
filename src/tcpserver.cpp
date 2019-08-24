@@ -20,6 +20,7 @@
 #include "timingwheel.h"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 const int defaultIdleTimeout = 120;

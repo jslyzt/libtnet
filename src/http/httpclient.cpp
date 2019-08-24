@@ -10,6 +10,7 @@
 #include "connector.inl"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 

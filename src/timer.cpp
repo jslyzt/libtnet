@@ -8,6 +8,8 @@
 #include "ioloop.h"
 #include "log.h"
 
+using namespace std::placeholders;
+
 #ifdef WIN32
 void wonTimer(UINT uTimerID, UINT uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2) {
     if (dwUser != NULL) {

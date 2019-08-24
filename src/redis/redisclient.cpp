@@ -11,12 +11,12 @@
 #include "connector.inl"
 #include "redistrans.h"
 
-extern "C"
-{
-#include "hiredis.h"
+extern "C" {
+    #include "hiredis.h"
 }
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 RedisClient::RedisClient(IOLoop* loop, const Address& addr, const string& password, size_t maxClients)

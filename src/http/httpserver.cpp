@@ -13,6 +13,7 @@
 #include "wsutil.h"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 static string rootPath = "/";

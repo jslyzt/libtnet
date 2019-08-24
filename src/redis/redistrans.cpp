@@ -7,6 +7,7 @@
 #include "redisclient.h"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 static void dummyCallback(const RedisReply&) {

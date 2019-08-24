@@ -7,6 +7,7 @@
 #include "../tnet_test.h"
 
 using namespace std;
+using namespace std::placeholders;
 using namespace tnet;
 
 namespace ws {

@@ -12,6 +12,7 @@
 #include "timingwheel.h"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 class IgnoreSigPipe {

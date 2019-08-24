@@ -22,6 +22,8 @@
 #include "sockutil.h"
 #include "log.h"
 
+using namespace std::placeholders;
+
 namespace tnet {
 
 int createDummyFd() {

@@ -13,6 +13,7 @@
 #include "ioloop.h"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 Signaler::Signaler(int signum, const SignalHandler_t& handler)

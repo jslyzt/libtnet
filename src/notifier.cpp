@@ -7,6 +7,8 @@
 #include <sys/eventfd.h>
 #endif
 
+using namespace std::placeholders;
+
 namespace tnet {
 
 Notifier::Notifier(const NotifierHandler_t& handler)

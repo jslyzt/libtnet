@@ -8,8 +8,6 @@
 #endif
 #include "nocopyable.h"
 
-using namespace std::placeholders;
-
 namespace tnet {
 
 #define TNET_VERSION "0.1"

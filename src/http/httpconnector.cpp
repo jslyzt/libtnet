@@ -6,6 +6,7 @@
 #include "connector.inl"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace tnet {
 size_t HttpConnector::ms_maxHeaderSize = 80 * 1024;
