@@ -11,6 +11,9 @@
 #include <unistd.h>
 #endif
 
+#include <string>
+#include <algorithm>
+
 namespace tnet {
 
 #ifdef WIN32
@@ -65,6 +68,17 @@ void Log::redirect(const char* fileName) {
         fclose(m_fd);
         m_fd = fopen(fileName, "ab+");
     }
+}
+
+Log::Level Log::getLevel(const char* str) {
+    std::string cstr(str);
+    std::transform(cstr.begin(), cstr.end(), cstr.begin(), ::toupper);
+    for (int lvl = TRACE; lvl <= FATAL; lvl++) {
+        if (strcmp(cstr.c_str(), LevelMsg[lvl]) == 0) {
+            return (Log::Level)lvl;
+        }
+    }
+    return Log::TRACE;
 }
 
 void Log::trace(const char* file, const char* function, int line, const char* fmt, ...) {

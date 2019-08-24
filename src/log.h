@@ -30,6 +30,7 @@ public:
 
     void setLevel(Level level) { m_level = level; }
     Level getLevel() { return m_level; }
+    Level getLevel(const char* str);
 
     void trace(const char* file, const char* function, int line, const char* fmt, ...);
     void debug(const char* file, const char* function, int line, const char* fmt, ...);
