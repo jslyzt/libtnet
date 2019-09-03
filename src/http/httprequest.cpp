@@ -162,11 +162,14 @@ void HttpRequest::parseJson(const std::string& str) {
 }
 
 void HttpRequest::parseHost() {
-    auto count = headers.count("host");
-    if (count <= 0) {
-        return;
+    auto iter = headers.find("X-Real-Ip");
+    if (iter == headers.end()) {
+        iter = headers.find("host");
+        if (iter == headers.end()) {
+            return;
+        }
     }
-    host = headers.find("host")->second;
+    host = iter->second;
 }
 
 void HttpRequest::parseContentType() {
@@ -178,13 +181,18 @@ void HttpRequest::parseContentType() {
     std::string key, boundary;
     for (size_t i = 0; i < count && iter != headers.end(); i++, iter++) {
         auto pos = iter->second.find(';');
+        auto size = iter->second.length();
         if (pos != std::string::npos) {
             key = iter->second.substr(0, pos);
-            pos++;
-            while (iter->second[pos] != '-') {
+            if (pos < size) {
                 pos++;
+                while (iter->second[pos] != '-' && pos < size) {
+                    pos++;
+                }
+                boundary = iter->second.substr(pos);
+            } else {
+                boundary.clear();
             }
-            boundary = iter->second.substr(pos);
         }
         else {
             key = iter->second;
