@@ -23,17 +23,12 @@ HttpResponse::HttpResponse(int code, const Headers_t& headers, const string& bod
 HttpResponse::~HttpResponse() {
 }
 
-string HttpResponse::dump() {
+string HttpResponse::dump() const {
     string str;
-
     char buf[1024];
+
     int n = snprintf(buf, sizeof(buf), "HTTP/1.1 %d %s\r\n", statusCode, HttpUtil::codeReason(statusCode).c_str());
-
     str.append(buf, n);
-
-    n = snprintf(buf, sizeof(buf), "%d", int(body.size()));
-    static const string ContentLength = "Content-Length";
-    headers.insert(make_pair(ContentLength, string(buf, n)));
 
     auto it = headers.cbegin();
     while (it != headers.cend()) {
@@ -41,6 +36,9 @@ string HttpResponse::dump() {
         str.append(buf, n);
         ++it;
     }
+
+    n = snprintf(buf, sizeof(buf), "Content-Length: %d\r\n", int(body.size()));
+    str.append(buf, n);
 
     str.append("\r\n");
     str.append(body);

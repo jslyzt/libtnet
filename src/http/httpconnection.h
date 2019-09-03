@@ -30,7 +30,7 @@ public:
 
     int getSockFd() { return m_fd; }
 
-    void send(HttpResponse& resp);
+    void send(const HttpResponse& resp);
     void send(int statusCode);
     void send(int statusCode, const std::string& body);
     void send(int statusCode, const std::string& body, const Headers_t& headers);

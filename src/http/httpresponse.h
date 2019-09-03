@@ -25,7 +25,7 @@ public:
     void enableDate();
 
     //generate http response text
-    std::string dump();
+    std::string dump() const;
 
     int statusCode;
     std::string body;

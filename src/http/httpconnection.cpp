@@ -54,12 +54,11 @@ void HttpConnection::shutDown(int after) {
     }
 }
 
-void HttpConnection::send(HttpResponse& resp) {
+void HttpConnection::send(const HttpResponse& resp) {
     ConnectionPtr_t conn = m_conn.lock();
     if (!conn) {
         return;
     }
-
     conn->send(resp.dump());
 }
 
