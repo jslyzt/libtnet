@@ -14,7 +14,7 @@ using namespace tnet;
 
 namespace ws {
 
-    void onWsCallback(const WsConnectionPtr_t& conn, WsEvent event, const void* context) {
+    void onWsCallback(WsConnectionPtr_t& conn, WsEvent event, const void* context) {
         switch (event) {
         case Ws_OpenEvent:
             LOG_INFO("websocket open");

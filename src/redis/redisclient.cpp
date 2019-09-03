@@ -67,11 +67,8 @@ RedisConnectionPtr_t RedisClient::popConn() {
 }
 
 void RedisClient::onReply(const RedisConnectionPtr_t& conn, const RedisReply& reply, const ReplyCallback_t& callback) {
-    RedisConnectionPtr_t c = conn->shared_from_this();
     auto cb = std::move(callback);
-
     pushConn(conn);
-
     cb(reply);
 }
 
@@ -79,15 +76,11 @@ void RedisClient::newTrans(const NewTransCallback_t& callback) {
     RedisConnectionPtr_t conn = popConn();
     if (conn) {
         RedisTransPtr_t trans = std::make_shared<RedisTrans>(shared_from_this(), conn);
-
         conn->setCallback(std::bind(&RedisTrans::onReply, trans, _1, _2));
-
         callback(trans, 0);
     } else {
         conn = std::make_shared<RedisConnection>();
-
         RedisTransPtr_t trans = std::make_shared<RedisTrans>(shared_from_this(), conn);
-
         conn->connect(m_loop, m_address, m_password, std::bind(&RedisTrans::onConnect, trans, _1, _2, callback));
     }
 }
@@ -95,15 +88,11 @@ void RedisClient::newTrans(const NewTransCallback_t& callback) {
 void RedisClient::exec(initializer_list<string> cmd, const ReplyCallback_t& callback) {
     RedisConnectionPtr_t conn = popConn();
     if (conn) {
-        conn->setCallback(std::bind(&RedisClient::onReply,
-                                    shared_from_this(), _1, _2, callback));
-
+        conn->setCallback(std::bind(&RedisClient::onReply, shared_from_this(), _1, _2, callback));
         conn->exec(cmd);
     } else {
         conn = std::make_shared<RedisConnection>();
-        conn->setCallback(std::bind(&RedisClient::onReply,
-                                    shared_from_this(), _1, _2, callback));
-
+        conn->setCallback(std::bind(&RedisClient::onReply, shared_from_this(), _1, _2, callback));
         conn->connect(m_loop, m_address, m_password, std::bind(&RedisClient::onConnect, shared_from_this(), _1, _2, vector<string>(cmd)));
     }
 }
@@ -113,7 +102,6 @@ void RedisClient::onConnect(const RedisConnectionPtr_t& conn, int status, const 
         LOG_ERROR("redis client connect fail %d", status);
         return;
     }
-
     conn->exec(cmd);
 }
 }

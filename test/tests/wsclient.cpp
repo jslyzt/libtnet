@@ -18,7 +18,7 @@ namespace ws {
         LOG_INFO("write complete %d", j);
     }
 
-    void onWsConnEvent(const WsConnectionPtr_t& conn, WsEvent event, const void* context) {
+    void onWsConnEvent(WsConnectionPtr_t& conn, WsEvent event, const void* context) {
         switch (event) {
         case Ws_OpenEvent:
             LOG_INFO("open");

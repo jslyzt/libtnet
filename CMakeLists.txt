@@ -18,8 +18,8 @@ include_directories(
 )
 
 link_directories(
-	${LFT_YUN_LIBS}/libs/linux
 	${LIBRARY_OUTPUT_PATH}
+	${LFT_YUN_LIBS}/libs/linux
 )
 
 add_subdirectory(src)

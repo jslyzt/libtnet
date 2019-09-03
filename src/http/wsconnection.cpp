@@ -49,12 +49,13 @@ WsConnection::~WsConnection() {
 
 void WsConnection::onOpen(const void* context) {
     m_status = FrameStart;
-
-    m_callback(shared_from_this(), Ws_OpenEvent, context);
+    WsConnectionPtr_t conn = shared_from_this();
+    m_callback(conn, Ws_OpenEvent, context);
 }
 
 void WsConnection::onError() {
-    m_callback(shared_from_this(), Ws_ErrorEvent, 0);
+    WsConnectionPtr_t conn = shared_from_this();
+    m_callback(conn, Ws_ErrorEvent, 0);
 }
 
 void WsConnection::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
@@ -119,7 +120,8 @@ int WsConnection::onRead(ConnectionPtr_t& conn, const char* data, size_t count) 
         LOG_ERROR("onReadError");
 
         m_status = FrameError;
-        m_callback(shared_from_this(), Ws_ErrorEvent, 0);
+        WsConnectionPtr_t wconn = shared_from_this();
+        m_callback(wconn, Ws_ErrorEvent, 0);
 
         //an error occur, only to shutdown connection
         conn->shutDown();
@@ -319,34 +321,35 @@ int WsConnection::handleFrameData(ConnectionPtr_t& conn) {
 }
 
 int WsConnection::handleMessage(ConnectionPtr_t& conn, uint8_t opcode, const string& data) {
+    WsConnectionPtr_t wconn = shared_from_this();
     switch (opcode) {
-        case 0x1:
+        case 0x1: {
             //utf-8 data
-            m_callback(shared_from_this(), Ws_MessageEvent, (void*)&data);
-            break;
-        case 0x2:
+            m_callback(wconn, Ws_MessageEvent, (void*)&data);
+        } break;
+        case 0x2: {
             //binary data
-            m_callback(shared_from_this(), Ws_MessageEvent, (void*)&data);
-            break;
-        case 0x8:
+            m_callback(wconn, Ws_MessageEvent, (void*)&data);
+        } break;
+        case 0x8: {
             //clsoe
-            m_callback(shared_from_this(), Ws_CloseEvent, 0);
+            m_callback(wconn, Ws_CloseEvent, 0);
             conn->shutDown(500);
-            break;
-        case 0x9:
+        } break;
+        case 0x9: {
             //ping
             sendFrame(true, 0xA, data);
-            break;
-        case 0xA:
+        } break;
+        case 0xA: {
             //pong
-            m_callback(shared_from_this(), Ws_PongEvent, (void*)&data);
-            break;
-        default:
+            m_callback(wconn, Ws_PongEvent, (void*)&data);
+        } break;
+        default: {
             //error
             LOG_ERROR("invalid opcode %d", opcode);
             return -1;
+        }
     }
-
     return 0;
 }
 

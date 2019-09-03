@@ -36,7 +36,7 @@ namespace comet {
         }
     }
 
-    void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
+    void onHandler(HttpConnectionPtr_t& conn, const HttpRequest& request) {
         if (request.method == HTTP_GET) {
 #ifndef WIN32
             int timeout = random() % 60 + 30;
