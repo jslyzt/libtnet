@@ -37,7 +37,7 @@ public:
 
     //send completely callback, called when all send buffers are send.
     //If there was a previous callback, that callback will be overwritten
-    void send(HttpResponse& resp, const Callback_t& callback);
+    void send(const HttpResponse& resp, const Callback_t& callback);
     void send(int statusCode, const Callback_t& callback);
     void send(int statusCode, const std::string& body, const Callback_t& callback);
     void send(int statusCode, const std::string& body, const Headers_t& headers, const Callback_t& callback);

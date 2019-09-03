@@ -87,7 +87,7 @@ void HttpConnection::send(int statusCode, const string& body, const Headers_t& h
     send(resp);
 }
 
-void HttpConnection::send(HttpResponse& resp, const Callback_t& callback) {
+void HttpConnection::send(const HttpResponse& resp, const Callback_t& callback) {
     m_sendCallback = callback;
     send(resp);
 }
