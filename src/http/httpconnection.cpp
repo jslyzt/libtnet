@@ -145,19 +145,22 @@ int HttpConnection::onHeadersComplete() {
 int HttpConnection::onMessageComplete() {
     m_request.parseBody();
     if (!m_parser.upgrade) {
-        m_callback(shared_from_this(), m_request, Request_Complete, 0);
+        HttpConnectionPtr_t conn = shared_from_this();
+        m_callback(conn, m_request, Request_Complete, 0);
     }
     return 0;
 }
 
 int HttpConnection::onUpgrade(const char* at, size_t length) {
     StackBuffer buffer(at, length);
-    m_callback(shared_from_this(), m_request, Request_Upgrade, &buffer);
+    HttpConnectionPtr_t conn = shared_from_this();
+    m_callback(conn, m_request, Request_Upgrade, &buffer);
     return 0;
 }
 
 int HttpConnection::onError(const HttpError& error) {
-    m_callback(shared_from_this(), m_request, Request_Error, (void*)&error);
+    HttpConnectionPtr_t conn = shared_from_this();
+    m_callback(conn, m_request, Request_Error, (void*)&error);
     return 0;
 }
 
