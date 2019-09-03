@@ -18,7 +18,6 @@ public:
     ~HttpRequest();
 
     void clear();
-    void parseUrl();
     std::string dump();
 
     std::string url;
@@ -41,7 +40,19 @@ public:
 
     uint16_t port;
 
+    void parseUrl();
     void parseQuery();
+    void parseBody();
+
+private:
+    void parseHost();
+    void parseContentType();
+
+private:
+    void parseKeyVal(const std::string& str);
+    void parseFormData(const std::string& str, const std::string& boundary);
+    void parseMFormData(const std::string& str, const std::string& boundary);
+    void parseJson(const std::string& str);
 };
 
 }

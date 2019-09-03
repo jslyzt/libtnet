@@ -84,14 +84,21 @@ void HttpRequest::parseUrl() {
 }
 
 void HttpRequest::parseQuery() {
-    if (query.empty() || !params.empty()) {
+    if (query.empty()) {
+        return;
+    }
+    parseKeyVal(query);
+}
+
+void HttpRequest::parseKeyVal(const std::string& str) {
+    if (str.empty() == true) {
         return;
     }
 
     static string sep1 = "&";
     static string sep2 = "=";
 
-    vector<string> args = StringUtil::split(query, sep1);
+    vector<string> args = StringUtil::split(str, sep1);
     string key;
     string value;
     for (size_t i = 0; i < args.size(); ++i) {
@@ -103,13 +110,104 @@ void HttpRequest::parseQuery() {
             key = p[0];
             value = "";
         } else {
-            //invalid, ignore
             continue;
         }
-
         params.insert(make_pair(HttpUtil::unescape(key), HttpUtil::unescape(value)));
     }
+}
 
+void HttpRequest::parseFormData(const std::string& str, const std::string& boundary) {
+    const char* ptr = str.c_str(), *p = nullptr;
+    size_t size = str.length();
+    string key;
+    string value;
+
+    ptr = strstr(ptr, "name=");
+    while (ptr != nullptr) {
+        ptr += 6;
+        p = strchr(ptr, '\"');
+        key = std::string(ptr, p);
+        ptr = p + 1;
+        while (*ptr == '\r' || *ptr == '\n') {
+            ptr++;
+        }
+        if (boundary.empty() == true) {
+            while (*p != '\r' && *p != '\n') {
+                p++;
+            }
+        } else {
+            p = strstr(ptr, boundary.c_str());
+            if (p == nullptr) {
+                p = str.c_str() + size;
+            } else {
+                while (p > ptr && (*p == '-' || *p == '\r' || *p == '\n')) {
+                    p--;
+                }
+                if (*p != '-' && *p == '\r' && *p == '\n') {
+                    p++;
+                }
+            }
+        }
+        params.insert(make_pair(HttpUtil::unescape(key), HttpUtil::unescape(std::string(ptr, p))));
+        ptr = strstr(p, "name=");
+    }
+}
+
+void HttpRequest::parseMFormData(const std::string& str, const std::string& boundary) {
+    parseFormData(str, boundary);
+}
+
+void HttpRequest::parseJson(const std::string& str) {
+
+}
+
+void HttpRequest::parseHost() {
+    auto count = headers.count("host");
+    if (count <= 0) {
+        return;
+    }
+    host = headers.find("host")->second;
+}
+
+void HttpRequest::parseContentType() {
+    auto count = headers.count("Content-Type");
+    if (count <= 0) {
+        return;
+    }
+    auto iter = headers.find("Content-Type");
+    std::string key, boundary;
+    for (size_t i = 0; i < count && iter != headers.end(); i++, iter++) {
+        auto pos = iter->second.find(';');
+        if (pos != std::string::npos) {
+            key = iter->second.substr(0, pos);
+            pos++;
+            while (iter->second[pos] != '-') {
+                pos++;
+            }
+            boundary = iter->second.substr(pos);
+        }
+        else {
+            key = iter->second;
+            boundary.clear();
+        }
+        if (key == "application/form-data") {  // 表单
+            parseFormData(body, boundary);
+        }
+        else if (key == "application/x-www-form-urlencoded") { // 键值对
+            parseKeyVal(body);
+        }
+        else if (key == "multipart/form-data") { // 支持文件上传
+            parseMFormData(body, boundary);
+        }
+        else if (key == "application/json") {  // json数据
+            parseJson(body);
+        }
+    }
+}
+
+void HttpRequest::parseBody() {
+    parseHost();
+    parseContentType();
 }
 
 static const string HostKey = "Host";

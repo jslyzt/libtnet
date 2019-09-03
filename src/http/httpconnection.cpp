@@ -124,7 +124,6 @@ int HttpConnection::onHeader(const string& field, const string& value) {
         return -1;
     }
 
-
     m_request.headers.insert(make_pair(field, value));
     return 0;
 }
@@ -134,7 +133,6 @@ int HttpConnection::onBody(const char* at, size_t length) {
         m_errorCode = 413;
         return -1;
     }
-
     m_request.body.append(at, length);
     return 0;
 }
@@ -142,7 +140,6 @@ int HttpConnection::onBody(const char* at, size_t length) {
 int HttpConnection::onHeadersComplete() {
     m_request.majorVersion = m_parser.http_major;
     m_request.minorVersion = m_parser.http_minor;
-
     m_request.method = (http_method)m_parser.method;
 
     m_request.parseUrl();
@@ -151,6 +148,7 @@ int HttpConnection::onHeadersComplete() {
 }
 
 int HttpConnection::onMessageComplete() {
+    m_request.parseBody();
     if (!m_parser.upgrade) {
         m_callback(shared_from_this(), m_request, Request_Complete, 0);
     }

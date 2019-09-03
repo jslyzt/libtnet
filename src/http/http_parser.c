@@ -2010,13 +2010,11 @@ http_parse_host(const char* buf, struct http_parser_url* u, int found_at) {
         default:
             break;
     }
-
     return 0;
 }
 
 int
-http_parser_parse_url(const char* buf, size_t buflen, int is_connect,
-                      struct http_parser_url* u) {
+http_parser_parse_url(const char* buf, size_t buflen, int is_connect, struct http_parser_url* u) {
     enum state s;
     const char* p;
     enum http_parser_url_fields uf, old_uf;
@@ -2033,7 +2031,6 @@ http_parser_parse_url(const char* buf, size_t buflen, int is_connect,
         switch (s) {
             case s_dead:
                 return 1;
-
             /* Skip delimeters */
             case s_req_schema_slash:
             case s_req_schema_slash_slash:
@@ -2041,31 +2038,24 @@ http_parser_parse_url(const char* buf, size_t buflen, int is_connect,
             case s_req_query_string_start:
             case s_req_fragment_start:
                 continue;
-
             case s_req_schema:
                 uf = UF_SCHEMA;
                 break;
-
             case s_req_server_with_at:
                 found_at = 1;
-
             /* FALLTROUGH */
             case s_req_server:
                 uf = UF_HOST;
                 break;
-
             case s_req_path:
                 uf = UF_PATH;
                 break;
-
             case s_req_query_string:
                 uf = UF_QUERY;
                 break;
-
             case s_req_fragment:
                 uf = UF_FRAGMENT;
                 break;
-
             default:
                 assert(!"Unexpected state");
                 return 1;
@@ -2105,10 +2095,8 @@ http_parser_parse_url(const char* buf, size_t buflen, int is_connect,
         if (v > 0xffff) {
             return 1;
         }
-
         u->port = (uint16_t) v;
     }
-
     return 0;
 }
 
