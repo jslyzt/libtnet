@@ -21,7 +21,7 @@ using namespace tnet;
 using namespace std::placeholders;
 
 namespace http {
-    void onHandler(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
+    void onHandler(HttpConnectionPtr_t& conn, const HttpRequest& request) {
         HttpResponse resp;
         resp.statusCode = 200;
         resp.setContentType("text/html");

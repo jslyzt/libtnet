@@ -32,9 +32,8 @@ protected:
     void handleClose(const void*) {}
 
 private:
-    void onConnConnectEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context, const ConnectCallback_t& callback);
-
-    void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context);
+    void onConnConnectEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context, const ConnectCallback_t& callback);
+    void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context);
 
 private:
     WeakConnectionPtr_t m_conn;

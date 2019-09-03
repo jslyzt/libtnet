@@ -70,7 +70,7 @@ public:
 //you must fetch data and store yourself if you need it later
 //other conn event, context is NULL
 
-typedef std::function<void (const ConnectionPtr_t&, ConnEvent, const void* context)> ConnEventCallback_t;
+typedef std::function<void (ConnectionPtr_t&, ConnEvent, const void* context)> ConnEventCallback_t;
 
 typedef std::function<void ()> Callback_t;
 typedef std::function<void ()> ProcessCallback_t;

@@ -57,7 +57,7 @@ void WsConnection::onError() {
     m_callback(shared_from_this(), Ws_ErrorEvent, 0);
 }
 
-void WsConnection::onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
+void WsConnection::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
     switch (event) {
         case Conn_ReadEvent: {
             const StackBuffer* buffer = (const StackBuffer*)context;
@@ -78,7 +78,7 @@ void WsConnection::onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, con
     ret = func(data + readLen, count - readLen); \
     readLen += (ret > 0 ? ret : 0);
 
-int WsConnection::onRead(const ConnectionPtr_t& conn, const char* data, size_t count) {
+int WsConnection::onRead(ConnectionPtr_t& conn, const char* data, size_t count) {
     size_t readLen = 0;
     int ret = 1;
 
@@ -267,7 +267,7 @@ int WsConnection::onFrameData(const char* data, size_t count) {
     return readLen;
 }
 
-int WsConnection::handleFrameData(const ConnectionPtr_t& conn) {
+int WsConnection::handleFrameData(ConnectionPtr_t& conn) {
     uint8_t opcode = m_opcode;
     string data = m_cache;
 
@@ -318,7 +318,7 @@ int WsConnection::handleFrameData(const ConnectionPtr_t& conn) {
     return 0;
 }
 
-int WsConnection::handleMessage(const ConnectionPtr_t& conn, uint8_t opcode, const string& data) {
+int WsConnection::handleMessage(ConnectionPtr_t& conn, uint8_t opcode, const string& data) {
     switch (opcode) {
         case 0x1:
             //utf-8 data

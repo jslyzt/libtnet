@@ -12,7 +12,7 @@ using namespace std::placeholders;
 using namespace tnet;
 
 namespace echos {
-    void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
+    void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
         switch (event) {
         case Conn_ReadEvent: {
             const StackBuffer* buffer = static_cast<const StackBuffer*>(context);

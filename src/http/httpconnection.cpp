@@ -27,21 +27,17 @@ HttpConnection::~HttpConnection() {
     LOG_INFO("httpconnection destroyed");
 }
 
-void HttpConnection::onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
+void HttpConnection::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
     HttpConnectionPtr_t httpConn = shared_from_this();
-
     switch (event) {
         case Conn_ReadEvent: {
             const StackBuffer* buf = (const StackBuffer*)context;
-
             execute(buf->buffer, buf->count);
-        }
-        break;
+        } break;
         case Conn_WriteCompleteEvent: {
             m_sendCallback();
             m_sendCallback = std::bind(&dummyCallback);
-        }
-        break;
+        } break;
         default:
             break;
     }

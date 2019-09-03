@@ -20,7 +20,7 @@ using namespace std::placeholders;
 
 namespace tnet {
 
-void dummyConnEvent(const ConnectionPtr_t&, ConnEvent, const void*) {
+void dummyConnEvent(ConnectionPtr_t&, ConnEvent, const void*) {
 }
 
 const int MaxReadBuffer = 4096;

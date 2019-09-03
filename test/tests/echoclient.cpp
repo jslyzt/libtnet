@@ -13,7 +13,7 @@ using namespace tnet;
 namespace echoc {
     int i = 0;
 
-    void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
+    void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
         switch (event) {
         case Conn_ReadEvent: {
             const StackBuffer* buffer = (const StackBuffer*)(context);

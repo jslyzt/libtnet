@@ -18,13 +18,11 @@ using namespace std::placeholders;
 namespace tnet {
 static string rootPath = "/";
 
-void httpNotFoundCallback(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
+void httpNotFoundCallback(HttpConnectionPtr_t& conn, const HttpRequest& request) {
     HttpResponse resp;
     resp.statusCode = 404;
-
     conn->send(resp);
 }
-
 
 HttpServer::HttpServer(TcpServer* server)
     : m_server(server) {
@@ -38,7 +36,7 @@ int HttpServer::listen(const Address& addr) {
     return m_server->listen(addr, std::bind(&HttpServer::onConnEvent, this, _1, _2, _3));
 }
 
-void HttpServer::onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
+void HttpServer::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
     switch (event) {
     case Conn_ListenEvent: {
             HttpConnectionPtr_t httpConn = std::make_shared<HttpConnection>(conn, std::bind(&HttpServer::onRequest, this, _1, _2, _3, _4));
@@ -70,12 +68,12 @@ void HttpServer::setWsCallback(const string& path, const WsCallback_t& callback,
     m_authCallbacks[path] = auth;
 }
 
-void HttpServer::onError(const HttpConnectionPtr_t& conn, const HttpError& error) {
+void HttpServer::onError(HttpConnectionPtr_t& conn, const HttpError& error) {
     conn->send(error.statusCode, error.message);
     conn->shutDown(1000);
 }
 
-bool HttpServer::authRequest(const HttpConnectionPtr_t& conn, const HttpRequest& request) {
+bool HttpServer::authRequest(HttpConnectionPtr_t& conn, const HttpRequest& request) {
     auto it = m_authCallbacks.find(request.path);
     if (it == m_authCallbacks.end()) {
         return true;
@@ -90,7 +88,7 @@ bool HttpServer::authRequest(const HttpConnectionPtr_t& conn, const HttpRequest&
     }
 }
 
-void HttpServer::onRequest(const HttpConnectionPtr_t& conn, const HttpRequest& request, RequestEvent event, const void* context) {
+void HttpServer::onRequest(HttpConnectionPtr_t& conn, const HttpRequest& request, RequestEvent event, const void* context) {
     switch (event) {
         case Request_Upgrade:
             onWebsocket(conn, request, context);
@@ -116,7 +114,7 @@ void HttpServer::onRequest(const HttpConnectionPtr_t& conn, const HttpRequest& r
 }
 
 
-void HttpServer::onWebsocket(const HttpConnectionPtr_t& conn, const HttpRequest& request, const void* context) {
+void HttpServer::onWebsocket(HttpConnectionPtr_t& conn, const HttpRequest& request, const void* context) {
     map<string, WsCallback_t>::iterator iter = m_wsCallbacks.find(request.path);
     if (iter == m_wsCallbacks.end()) {
         onError(conn, 404);

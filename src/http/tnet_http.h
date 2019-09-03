@@ -79,13 +79,13 @@ enum ResponseEvent {
 //Response_Complete: context is 0
 //Response_Error: context is &HttpError
 
-typedef std::function<void (const HttpConnectionPtr_t&, const HttpRequest&)> HttpCallback_t;
+typedef std::function<void (HttpConnectionPtr_t&, const HttpRequest&)> HttpCallback_t;
 
 //Ws_OpenEvent: server side, context is &HttpRequest, client side, context is &HttpResponse
 //Ws_MessageEvent: context is &std::string
 //Other Ws Event: context is 0
 
-typedef std::function<void (const WsConnectionPtr_t&, WsEvent, const void*)> WsCallback_t;
+typedef std::function<void (WsConnectionPtr_t&, WsEvent, const void*)> WsCallback_t;
 
 typedef std::function<void (const HttpResponse&)> ResponseCallback_t;
 

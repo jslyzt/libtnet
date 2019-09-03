@@ -39,12 +39,12 @@ public:
     static void setMaxPayloadLen(size_t len) { ms_maxPayloadLen = len; }
 
 private:
-    void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void*);
+    void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void*);
 
     void onOpen(const void* context);
     void onError();
 
-    int onRead(const ConnectionPtr_t& conn, const char* data, size_t count);
+    int onRead(ConnectionPtr_t& conn, const char* data, size_t count);
 
     bool isFinalFrame() { return m_final > 0; }
     bool isMaskFrame() { return m_mask > 0; }
@@ -61,8 +61,8 @@ private:
     int onFrameData(const char* data, size_t count);
 
     int handleFramePayloadLen(size_t payloadLen);
-    int handleFrameData(const ConnectionPtr_t& conn);
-    int handleMessage(const ConnectionPtr_t& conn, uint8_t opcode, const std::string& message);
+    int handleFrameData(ConnectionPtr_t& conn);
+    int handleMessage(ConnectionPtr_t& conn, uint8_t opcode, const std::string& message);
     int tryRead(const char* data, size_t count, size_t tryReadData);
 
     void sendFrame(bool finalFrame, char opcode, const std::string& message = std::string());

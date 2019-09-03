@@ -37,14 +37,14 @@ public:
     void setWsCallback(const std::string& path, const WsCallback_t& callback, const AuthCallback_t& auth);
 
 private:
-    void onConnEvent(const ConnectionPtr_t&, ConnEvent, const void* context);
+    void onConnEvent(ConnectionPtr_t&, ConnEvent, const void* context);
 
-    void onRequest(const HttpConnectionPtr_t& conn, const HttpRequest& request, RequestEvent event, const void* context);
-    void onWebsocket(const HttpConnectionPtr_t& conn, const HttpRequest& request, const void* context);
+    void onRequest(HttpConnectionPtr_t& conn, const HttpRequest& request, RequestEvent event, const void* context);
+    void onWebsocket(HttpConnectionPtr_t& conn, const HttpRequest& request, const void* context);
 
-    void onError(const HttpConnectionPtr_t& conn, const HttpError& error);
+    void onError(HttpConnectionPtr_t& conn, const HttpError& error);
 
-    bool authRequest(const HttpConnectionPtr_t& conn, const HttpRequest& request);
+    bool authRequest(HttpConnectionPtr_t& conn, const HttpRequest& request);
 
 private:
     TcpServer* m_server;

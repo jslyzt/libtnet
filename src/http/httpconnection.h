@@ -23,7 +23,7 @@ class HttpConnection : public HttpParser
 public:
     friend class HttpServer;
 
-    typedef std::function<void (const HttpConnectionPtr_t&, const HttpRequest&, RequestEvent, const void*)> RequestCallback_t;
+    typedef std::function<void (HttpConnectionPtr_t&, const HttpRequest&, RequestEvent, const void*)> RequestCallback_t;
     HttpConnection(const ConnectionPtr_t& conn, const RequestCallback_t& callback);
 
     ~HttpConnection();
@@ -61,7 +61,7 @@ private:
     int onUpgrade(const char* at, size_t length);
     int onError(const HttpError& error);
 
-    void onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context);
+    void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context);
 
 private:
     std::weak_ptr<Connection> m_conn;

@@ -32,7 +32,7 @@ int Connector<Derived>::connect(IOLoop* loop, const Address& addr, const Connect
 }
 
 template<typename Derived>
-void Connector<Derived>::onConnConnectEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context, const ConnectCallback_t& callback) {
+void Connector<Derived>::onConnConnectEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context, const ConnectCallback_t& callback) {
     switch (event) {
         case Conn_ConnectEvent: {
             ConnectCallback_t cb = std::move(callback);
@@ -47,7 +47,7 @@ void Connector<Derived>::onConnConnectEvent(const ConnectionPtr_t& conn, ConnEve
 }
 
 template<typename Derived>
-void Connector<Derived>::onConnEvent(const ConnectionPtr_t& conn, ConnEvent event, const void* context) {
+void Connector<Derived>::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
     DerivedPtr_t t = this->shared_from_this();
     switch (event) {
         case Conn_ReadEvent: {
