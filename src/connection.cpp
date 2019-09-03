@@ -70,7 +70,8 @@ void Connection::connect(const Address& addr) {
 
     int err = SockUtil::connect(m_fd, addr);
     if (err < 0) {
-        m_callback(shared_from_this(), Conn_ConnFailEvent, 0);
+        ConnectionPtr_t conn = shared_from_this();
+        m_callback(conn, Conn_ConnFailEvent, 0);
         return;
     } else {
         m_status = Connected;
@@ -126,7 +127,8 @@ void Connection::handleConnect() {
     m_loop->updateHandler(m_fd, TNET_READ);
     updateActiveTime();
     m_status = Connected;
-    m_callback(shared_from_this(), Conn_ConnectEvent, 0);
+    ConnectionPtr_t conn = shared_from_this();
+    m_callback(conn, Conn_ConnectEvent, 0);
 }
 
 void Connection::handleRead() {
@@ -139,7 +141,8 @@ void Connection::handleRead() {
     if (n > 0) {
         StackBuffer b(buf, n);
         updateActiveTime();
-        m_callback(shared_from_this(), Conn_ReadEvent, &b);
+        ConnectionPtr_t conn = shared_from_this();
+        m_callback(conn, Conn_ReadEvent, &b);
         return;
     } else if (n == 0) {
         handleClose();
@@ -188,7 +191,8 @@ void Connection::handleWrite(const string& data) {
 #endif
     if (n == totalSize) {
         string().swap(m_sendBuffer);
-        m_callback(shared_from_this(), Conn_WriteCompleteEvent, 0);
+        ConnectionPtr_t conn = shared_from_this();
+        m_callback(conn, Conn_WriteCompleteEvent, 0);
         m_loop->updateHandler(m_fd, TNET_READ);
         updateActiveTime();
         return;
@@ -236,12 +240,14 @@ bool Connection::disconnect() {
 
 void Connection::handleError() {
     disconnect();
-    m_callback(shared_from_this(), Conn_ErrorEvent, 0);
+    ConnectionPtr_t conn = shared_from_this();
+    m_callback(conn, Conn_ErrorEvent, 0);
 }
 
 void Connection::handleClose() {
     if (disconnect()) {
-        m_callback(shared_from_this(), Conn_CloseEvent, 0);
+        ConnectionPtr_t conn = shared_from_this();
+        m_callback(conn, Conn_CloseEvent, 0);
     }
 }
 

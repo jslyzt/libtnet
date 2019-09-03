@@ -25,7 +25,7 @@ int Connector<Derived>::connect(IOLoop* loop, const Address& addr, const Connect
 
     ConnectionPtr_t conn = std::make_shared<Connection>(loop, fd);
     m_conn = conn;
-    conn->setEventCallback(std::bind(&Connector<Derived>::onConnConnectEvent, this->shared_from_this(), 
+    conn->setEventCallback(std::bind(&Connector<Derived>::onConnConnectEvent, shared_from_this(), 
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, callback));
     conn->connect(addr);
     return 0;
@@ -36,19 +36,19 @@ void Connector<Derived>::onConnConnectEvent(ConnectionPtr_t& conn, ConnEvent eve
     switch (event) {
         case Conn_ConnectEvent: {
             ConnectCallback_t cb = std::move(callback);
-            conn->setEventCallback(std::bind(&Connector<Derived>::onConnEvent, this->shared_from_this(), 
+            conn->setEventCallback(std::bind(&Connector<Derived>::onConnEvent, shared_from_this(), 
                 std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-            cb(this->shared_from_this(), true);
+            cb(shared_from_this(), true);
         } break;
         default: {
-            callback(this->shared_from_this(), false);
+            callback(shared_from_this(), false);
         } break;
     }
 }
 
 template<typename Derived>
 void Connector<Derived>::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
-    DerivedPtr_t t = this->shared_from_this();
+    DerivedPtr_t t = shared_from_this();
     switch (event) {
         case Conn_ReadEvent: {
             const StackBuffer* buf = (const StackBuffer*)(context);
