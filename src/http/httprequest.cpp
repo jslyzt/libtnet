@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <vector>
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
 
 extern "C"
 {
@@ -159,9 +162,81 @@ void HttpRequest::parseMFormData(const std::string& str, const std::string& boun
     parseFormData(str, boundary);
 }
 
-void HttpRequest::parseJson(const std::string& str) {
+//--------------------------------------------------------------------------------------------
+void addJsonNode(HttpRequest& req, rapidjson::Writer<rapidjson::StringBuffer>& writer,
+    rapidjson::StringBuffer& buffer, const std::string& key, rapidjson::Value& val);
 
+void addJsonMember(HttpRequest& req, rapidjson::Writer<rapidjson::StringBuffer>& writer,
+    rapidjson::StringBuffer& buffer, const std::string& key, rapidjson::Value& val) {
+    buffer.Clear();
+    writer.Reset(buffer);
+    if (val.Accept(writer) == false) {
+        return;
+    }
+    std::string tmp(buffer.GetString(), buffer.GetSize());
+    if (tmp.empty() == false) {
+        if ((tmp[0]) == '\"') {
+            tmp = tmp.substr(1);
+        }
+    }
+    if (tmp.empty() == false) {
+        if ((tmp[tmp.length() - 1]) == '\"') {
+            tmp = tmp.substr(0, tmp.length() - 1);
+        }
+    }
+    req.params.insert(make_pair(HttpUtil::unescape(key), HttpUtil::unescape(tmp)));
 }
+
+void addJsonArray(HttpRequest& req, rapidjson::Writer<rapidjson::StringBuffer>& writer,
+                  rapidjson::StringBuffer& buffer, const std::string& key, rapidjson::Value& val) {
+    std::string skey;
+    for (rapidjson::SizeType i = 0; i < val.Size(); i++) {
+        auto& node = val[i];
+        if (key.empty() == true) {
+            skey = std::to_string(i);
+        } else {
+            skey = key + "." + std::to_string(i);
+        }
+        addJsonNode(req, writer, buffer, skey, node);
+    }
+}
+
+void addJsonObject(HttpRequest& req, rapidjson::Writer<rapidjson::StringBuffer>& writer,
+                   rapidjson::StringBuffer& buffer, const std::string& key, rapidjson::Value& val) {
+    std::string skey;
+    for (auto iter = val.MemberBegin(); iter != val.MemberEnd(); iter++) {
+        if (key.empty() == true) {
+            skey = (iter->name).GetString();
+        } else {
+            skey = key + "." + (iter->name).GetString();
+        }
+        addJsonNode(req, writer, buffer, skey, iter->value);
+    }
+}
+
+void addJsonNode(HttpRequest& req, rapidjson::Writer<rapidjson::StringBuffer>& writer,
+                 rapidjson::StringBuffer& buffer, const std::string& key, rapidjson::Value& val) {
+    if (val.IsObject() == true) {
+        addJsonObject(req, writer, buffer, key, val);
+    } else if (val.IsArray() == true) {
+        addJsonArray(req, writer, buffer, key, val);
+    } else {
+        addJsonMember(req, writer, buffer, key, val);
+    }
+}
+
+void HttpRequest::parseJson(const std::string& str) {
+    rapidjson::Document doc;
+    doc.Parse(str.c_str());
+    if (doc.HasParseError() == true) {
+        LOG_ERROR("parser json error: %s", doc.GetParseError());
+        return;
+    }
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    addJsonNode(*this, writer, buffer, "", doc);
+}
+//--------------------------------------------------------------------------------------------
 
 void HttpRequest::parseHost() {
     auto iter = headers.find("X-Real-Ip");
