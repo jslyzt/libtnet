@@ -10,10 +10,6 @@ namespace tnet {
 class HttpConnector : public HttpParser
     , public Connector<HttpConnector> {
 public:
-    friend class HttpClient;
-    friend class WsClient;
-    friend class Connector<HttpConnector>;
-
     typedef std::function<void (const HttpConnectorPtr_t&, const HttpResponse&, ResponseEvent)> ResponseCallback_t;
 
     HttpConnector();
@@ -25,9 +21,8 @@ public:
     static void setMaxHeaderSize(size_t size) { ms_maxHeaderSize = size; }
     static void setMaxBodySize(size_t size) { ms_maxBodySize = size; }
 
-private:
     void handleRead(const char* buffer, size_t count);
-
+private:
     int onMessageBegin();
     int onHeader(const std::string& field, const std::string& value);
     int onHeadersComplete();

@@ -35,12 +35,13 @@ private:
     int m_maxBuckets;
 
     int m_maxTimeout;
-
-    int m_nextBucket;
+    volatile int m_nextBucket;
 
     typedef std::vector<TimingWheelHandler_t> TimingChan_t;
     typedef std::vector<TimingChan_t> Buckets_t;
 
+    TimingChan_t m_curbucket;
+    volatile bool m_ontimer;
     Buckets_t m_buckets;
 };
 

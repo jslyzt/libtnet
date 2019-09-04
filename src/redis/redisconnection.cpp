@@ -25,7 +25,7 @@ RedisConnection::RedisConnection()
 
 RedisConnection::~RedisConnection() {
     redisFree(m_context);
-    LOG_INFO("destroyed");
+    //LOG_INFO("destroyed");
 }
 
 void RedisConnection::handleRead(const char* buffer, size_t count) {

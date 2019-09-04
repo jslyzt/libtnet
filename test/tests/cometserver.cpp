@@ -52,8 +52,6 @@ namespace comet {
 }
 
 TEST_F(CometTest, server) {
-    Log::rootLog().setLevel(Log::Error);
-
     TcpServer s;
 
     s.setRunCallback(std::bind(&comet::onServerRun, _1));

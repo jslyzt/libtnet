@@ -23,7 +23,8 @@ using namespace std;
 using namespace std::placeholders;
 
 namespace tnet {
-const int defaultIdleTimeout = 120;
+
+const int defaultIdleTimeout = 30;  // 默认无数据读写超时时间
 
 void dummyRunCallback(IOLoop*) {
 }
@@ -118,18 +119,23 @@ void TcpServer::onNewConnection(IOLoop* loop, int fd, const ConnEventCallback_t&
     conn->setEventCallback(callback);
     conn->onEstablished();
 
+    int afterCheck = m_maxIdleTimeout / 2;
 #ifndef WIN32
-    int afterCheck = m_maxIdleTimeout / 2 + random() % m_maxIdleTimeout;
+    afterCheck += random() % afterCheck;
 #else
-    int afterCheck = m_maxIdleTimeout / 2 + rand() % m_maxIdleTimeout;
+    afterCheck += rand() % afterCheck;
 #endif
-    m_idleWheel->add(std::bind(&TcpServer::onIdleConnCheck, this, _1, WeakConnectionPtr_t(conn)), afterCheck * 1000);
+    addIdleConnCheck(conn, (uint64_t)afterCheck);
     return;
+}
+
+void TcpServer::addIdleConnCheck(ConnectionPtr_t conn, uint64_t timeout) {
+    m_idleWheel->add(std::bind(&TcpServer::onIdleConnCheck, this, _1, WeakConnectionPtr_t(conn)), timeout * 1000);
 }
 
 void TcpServer::onIdleConnCheck(const TimingWheelPtr_t& wheel, const WeakConnectionPtr_t& conn) {
     ConnectionPtr_t c = conn.lock();
-    if (!c) {
+    if (c == nullptr || c->isClose() == true) {
         return;
     }
 
@@ -137,12 +143,16 @@ void TcpServer::onIdleConnCheck(const TimingWheelPtr_t& wheel, const WeakConnect
     Timer::clock_gettime(CLOCK_MONOTONIC, &t);
     uint64_t now = t.tv_sec;
 
-    if (now - c->lastActiveTime() > (uint64_t)m_maxIdleTimeout) {
-        LOG_INFO("timeout, force shutdown");
+    uint64_t idletmt = c->getIdleTimeout();
+    if (idletmt <= 0) {
+        idletmt = (uint64_t)m_maxIdleTimeout;
+    }
+
+    auto diff = now - c->lastActiveTime();
+    if (diff > idletmt) {
         c->shutDown();
     } else {
-        //check interval is (maxIdleTimeout * 9 / 10) * 1000
-        m_idleWheel->add(std::bind(&TcpServer::onIdleConnCheck, this, _1, WeakConnectionPtr_t(c)), m_maxIdleTimeout * 900);
+        addIdleConnCheck(c, idletmt - diff);
     }
 }
 

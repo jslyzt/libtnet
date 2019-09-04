@@ -96,18 +96,11 @@ void Timer::reset(int repeat, int after) {
         LOG_ERROR("set timer error");
     }
 #else
-    UINT uDelay = 0, uResolution = 1, fuEvent = TIME_ONESHOT;
+    UINT fuEvent = TIME_ONESHOT;
     if (repeat > 0) {
-        uDelay = (uint64_t)repeat / milliPerSeconds;
         fuEvent = TIME_PERIODIC;
     }
-    if (after > 0) {
-        uDelay = (uint64_t)after / milliPerSeconds;
-    }
-    if (uDelay <= 0) {
-        uDelay = 1;
-    }
-    m_fd = timeSetEvent(uDelay, uResolution, (LPTIMECALLBACK)wonTimer, (DWORD_PTR)this, fuEvent);
+    m_fd = timeSetEvent((UINT)repeat, (UINT)after, (LPTIMECALLBACK)wonTimer, (DWORD_PTR)this, fuEvent);
 #endif
     m_repeated = (repeat > 0);
 }

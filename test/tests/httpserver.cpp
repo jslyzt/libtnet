@@ -38,8 +38,6 @@ namespace http {
 
 
 TEST_F(HttpTest, server) {
-    Log::rootLog().setLevel(Log::Error);
-
     TcpServer s;
 
     HttpServer httpd(&s);

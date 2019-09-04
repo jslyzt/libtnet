@@ -21,11 +21,9 @@ class HttpResponse;
 class HttpConnection : public HttpParser
     , public std::enable_shared_from_this<HttpConnection> {
 public:
-    friend class HttpServer;
-
     typedef std::function<void (HttpConnectionPtr_t&, const HttpRequest&, RequestEvent, const void*)> RequestCallback_t;
-    HttpConnection(const ConnectionPtr_t& conn, const RequestCallback_t& callback);
 
+    HttpConnection(const ConnectionPtr_t& conn, const RequestCallback_t& callback);
     ~HttpConnection();
 
     int getSockFd() { return m_fd; }
@@ -51,6 +49,7 @@ public:
     static void setMaxHeaderSize(size_t size) { ms_maxHeaderSize = size; }
     static void setMaxBodySize(size_t size) { ms_maxBodySize = size; }
 
+    void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context);
 private:
     int onMessageBegin();
     int onUrl(const char* at, size_t length);
@@ -60,8 +59,6 @@ private:
     int onMessageComplete();
     int onUpgrade(const char* at, size_t length);
     int onError(const HttpError& error);
-
-    void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context);
 
 private:
     std::weak_ptr<Connection> m_conn;

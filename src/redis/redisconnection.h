@@ -10,9 +10,7 @@ class Address;
 class RedisConnection : public Connector<RedisConnection> {
 public:
     typedef std::function<void (const RedisConnectionPtr_t&, const RedisReply&)> ReplyCallback_t;
-
     typedef Connector<RedisConnection> Base_t;
-    friend class Connector<RedisConnection>;
 
     RedisConnection();
     ~RedisConnection();
@@ -27,9 +25,8 @@ public:
     typedef std::function<void (const RedisConnectionPtr_t& conn, int status)> ConnectCallback_t;
     void connect(IOLoop* loop, const Address& addr, const std::string& password, const ConnectCallback_t& callback);
 
-private:
     void handleRead(const char*, size_t);
-
+private:
     void onConnect(const RedisConnectionPtr_t& conn, bool connected, const std::string& password, const ConnectCallback_t& callback);
     void onAuth(const RedisConnectionPtr_t& conn, const RedisReply& reply, const ConnectCallback_t& callback);
 

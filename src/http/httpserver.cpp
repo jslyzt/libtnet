@@ -38,7 +38,7 @@ int HttpServer::listen(const Address& addr) {
 
 void HttpServer::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
     switch (event) {
-    case Conn_ListenEvent: {
+        case Conn_ListenEvent: {
             HttpConnectionPtr_t httpConn = std::make_shared<HttpConnection>(conn, std::bind(&HttpServer::onRequest, this, _1, _2, _3, _4));
             conn->setEventCallback(std::bind(&HttpConnection::onConnEvent, httpConn, _1, _2, _3));
         } break;

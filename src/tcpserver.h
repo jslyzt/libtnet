@@ -27,7 +27,7 @@ public:
 
     //timeout is second
     void setMaxIdleTimeout(int timeout) { m_maxIdleTimeout = timeout; }
-
+    void addIdleConnCheck(ConnectionPtr_t conn, uint64_t timeout);
 private:
     void run();
     void onRun();

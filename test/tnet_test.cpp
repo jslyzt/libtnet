@@ -1,5 +1,6 @@
 #include "tnet_test.h"
 #include "tnet.h"
+#include "log.h"
 
 TNetEnvironment::TNetEnvironment() {
 }
@@ -41,5 +42,6 @@ int main(int argc, char** argv) {
     testing::AddGlobalTestEnvironment(new TNetEnvironment);
     testing::InitGoogleTest(&argc, argv);
     tnet::platformInit();
+    tnet::Log::rootLog().setLevel(tnet::Log::TRACE);
     return RUN_ALL_TESTS();
 }

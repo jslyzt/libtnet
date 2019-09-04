@@ -25,7 +25,7 @@ public:
 
     void shutDown();
 
-protected:
+public:
     void handleRead(const char*, size_t) {}
     void handleWriteComplete(const void*) {}
     void handleError(const void*) {}

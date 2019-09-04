@@ -27,8 +27,9 @@ const int MaxReadBuffer = 4096;
 Connection::Connection(IOLoop* loop, int fd)
     : m_loop(loop)
     , m_fd(fd)
-    , m_status(None) {
-    assert(fd > 0);
+    , m_status(None)
+    , m_lastActiveTime(0)
+    , m_IdleTimeout(0) {
     m_callback = std::bind(&dummyConnEvent, _1, _2, _3);
 }
 

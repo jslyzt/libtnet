@@ -24,7 +24,7 @@ HttpConnection::HttpConnection(const ConnectionPtr_t& conn, const RequestCallbac
 }
 
 HttpConnection::~HttpConnection() {
-    LOG_INFO("httpconnection destroyed");
+    //LOG_INFO("httpconnection destroyed");
 }
 
 void HttpConnection::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
@@ -56,6 +56,9 @@ void HttpConnection::send(const HttpResponse& resp) {
         return;
     }
     conn->send(resp.dump());
+    if (m_request.keepAlive <= 0) { // http连接处理完成之后自动关闭
+        conn->shutDown();
+    }
 }
 
 void HttpConnection::send(int statusCode) {
@@ -144,6 +147,12 @@ int HttpConnection::onHeadersComplete() {
 
 int HttpConnection::onMessageComplete() {
     m_request.parseBody();
+    if (m_request.keepAlive > 0) {
+        ConnectionPtr_t conn = m_conn.lock();
+        if (conn != nullptr) {
+            conn->setIdleTimeout((uint64_t)m_request.keepAlive);
+        }
+    }
     if (!m_parser.upgrade) {
         HttpConnectionPtr_t conn = shared_from_this();
         m_callback(conn, m_request, Request_Complete, 0);

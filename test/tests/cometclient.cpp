@@ -36,8 +36,6 @@ namespace comet {
 
 
 TEST_F(CometTest, client) {
-    Log::rootLog().setLevel(Log::Error);
-
     vector<HttpClientPtr_t> clients;
     IOLoop loop;
     clients.push_back(std::make_shared<HttpClient>(&loop));

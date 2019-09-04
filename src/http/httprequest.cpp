@@ -21,6 +21,7 @@ HttpRequest::HttpRequest() {
     majorVersion = 1;
     minorVersion = 1;
     method = HTTP_GET;
+    keepAlive = 0;
 }
 
 HttpRequest::~HttpRequest() {
@@ -41,6 +42,7 @@ void HttpRequest::clear() {
     minorVersion = 1;
     method = HTTP_GET;
     port = 80;
+    keepAlive = 0;
 }
 
 void HttpRequest::parseUrl() {
@@ -193,22 +195,35 @@ void HttpRequest::parseContentType() {
             } else {
                 boundary.clear();
             }
-        }
-        else {
+        } else {
             key = iter->second;
             boundary.clear();
         }
         if (key == "application/form-data") {  // 表单
             parseFormData(body, boundary);
-        }
-        else if (key == "application/x-www-form-urlencoded") { // 键值对
+        } else if (key == "application/x-www-form-urlencoded") { // 键值对
             parseKeyVal(body);
-        }
-        else if (key == "multipart/form-data") { // 支持文件上传
+        } else if (key == "multipart/form-data") { // 支持文件上传
             parseMFormData(body, boundary);
-        }
-        else if (key == "application/json") {  // json数据
+        } else if (key == "application/json") { // json数据
             parseJson(body);
+        }
+    }
+}
+
+void HttpRequest::parseKeepAlive() {
+    auto iter = headers.find("Connection");
+    if (iter == headers.end()) {
+        return;
+    }
+    if (iter->second == "close") {
+        keepAlive = -1;
+    } else if (iter->second == "keep-alive") {
+        auto kiter = headers.find("Keep-Alive");
+        if (kiter == headers.end()) {
+            keepAlive = 0;
+        } else {
+            keepAlive = std::stoi(iter->second);
         }
     }
 }
@@ -216,6 +231,7 @@ void HttpRequest::parseContentType() {
 void HttpRequest::parseBody() {
     parseHost();
     parseContentType();
+    parseKeepAlive();
 }
 
 static const string HostKey = "Host";

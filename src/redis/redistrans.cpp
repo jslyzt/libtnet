@@ -22,8 +22,7 @@ RedisTrans::RedisTrans(const RedisClientPtr_t& client, const RedisConnectionPtr_
 }
 
 RedisTrans::~RedisTrans() {
-    LOG_INFO("destroyed");
-
+    //LOG_INFO("destroyed");
     RedisClientPtr_t client = m_client.lock();
     if (client) {
         client->pushConn(m_conn.lock());

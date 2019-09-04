@@ -12,12 +12,12 @@ extern "C"
 namespace tnet {
 class HttpParser : public nocopyable {
 public:
-    friend class HttpParserSettings;
-
     HttpParser(enum http_parser_type type);
     virtual ~HttpParser();
 
-    enum http_parser_type getType() { return (http_parser_type)m_parser.type; }
+    enum http_parser_type getType() {
+        return (http_parser_type)m_parser.type;
+    }
 
     enum Event {
         Parser_MessageBegin,
@@ -42,9 +42,9 @@ protected:
     virtual int onUpgrade(const char*, size_t) { return 0; }
     virtual int onError(const HttpError& error) { return 0; }
 
-private:
+public:
     int onParser(Event, const char*, size_t);
-
+private:
     int handleMessageBegin();
     int handleHeaderField(const char*, size_t);
     int handleHeaderValue(const char*, size_t);

@@ -23,8 +23,6 @@ class HttpConnection;
 
 class HttpServer : public nocopyable {
 public:
-    friend class HttpConnection;
-
     HttpServer(TcpServer* server);
     ~HttpServer();
 

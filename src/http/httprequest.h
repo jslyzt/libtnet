@@ -39,6 +39,7 @@ public:
     http_method method;
 
     uint16_t port;
+    int32_t keepAlive;
 
     void parseUrl();
     void parseQuery();
@@ -47,6 +48,7 @@ public:
 private:
     void parseHost();
     void parseContentType();
+    void parseKeepAlive();
 
 private:
     void parseKeyVal(const std::string& str);

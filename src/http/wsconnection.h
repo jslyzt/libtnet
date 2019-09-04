@@ -16,9 +16,6 @@ class HttpRequest;
 class WsConnection : public nocopyable
     , public std::enable_shared_from_this<WsConnection> {
 public:
-    friend class HttpServer;
-    friend class WsClient;
-
     WsConnection(const ConnectionPtr_t& conn, const WsCallback_t& callback);
     ~WsConnection();
 
@@ -38,14 +35,11 @@ public:
 
     static void setMaxPayloadLen(size_t len) { ms_maxPayloadLen = len; }
 
-private:
     void onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void*);
-
     void onOpen(const void* context);
     void onError();
-
     int onRead(ConnectionPtr_t& conn, const char* data, size_t count);
-
+private:
     bool isFinalFrame() { return m_final > 0; }
     bool isMaskFrame() { return m_mask > 0; }
     bool isControlFrame() { return (m_opcode & 0x08) > 0; }
