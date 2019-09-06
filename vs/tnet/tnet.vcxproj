@@ -63,6 +63,7 @@
     <ClInclude Include="..\..\src\ioevent.h" />
     <ClInclude Include="..\..\src\ioloop.h" />
     <ClInclude Include="..\..\src\log.h" />
+    <ClInclude Include="..\..\src\log_lvl.h" />
     <ClInclude Include="..\..\src\nocopyable.h" />
     <ClInclude Include="..\..\src\notifier.h" />
     <ClInclude Include="..\..\src\polarssl\base64.h" />

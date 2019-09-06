@@ -8,15 +8,6 @@
 namespace tnet {
 class Log : public nocopyable {
 public:
-    enum Level {
-        TRACE = 0,
-        DEBUG,
-        INFO,
-        WARN,
-        Error,
-        FATAL,
-    };
-
     Log();
     Log(const char* fileName);
     ~Log();
@@ -28,9 +19,9 @@ public:
 
     void redirect(const char* fileName);
 
-    void setLevel(Level level) { m_level = level; }
-    Level getLevel() { return m_level; }
-    Level getLevel(const char* str);
+    void setLevel(int level) { m_level = level; }
+    int getLevel() { return m_level; }
+    int getLevel(const char* str);
 
     void trace(const char* file, const char* function, int line, const char* fmt, ...);
     void debug(const char* file, const char* function, int line, const char* fmt, ...);
@@ -44,7 +35,7 @@ private:
 
 private:
     FILE* m_fd;
-    Level m_level;
+    int m_level;
 };
 
 #ifdef WIN32

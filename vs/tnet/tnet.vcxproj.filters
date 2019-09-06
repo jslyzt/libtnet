@@ -201,6 +201,9 @@
     <ClInclude Include="..\..\src\polarssl\sha1.h">
       <Filter>ssl</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\log_lvl.h">
+      <Filter>base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="http">

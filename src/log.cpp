@@ -1,5 +1,5 @@
 #include "log.h"
-
+#include "log_lvl.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
@@ -70,15 +70,15 @@ void Log::redirect(const char* fileName) {
     }
 }
 
-Log::Level Log::getLevel(const char* str) {
+int Log::getLevel(const char* str) {
     std::string cstr(str);
     std::transform(cstr.begin(), cstr.end(), cstr.begin(), ::toupper);
     for (int lvl = TRACE; lvl <= FATAL; lvl++) {
         if (strcmp(cstr.c_str(), LevelMsg[lvl]) == 0) {
-            return (Log::Level)lvl;
+            return lvl;
         }
     }
-    return Log::TRACE;
+    return TRACE;
 }
 
 void Log::trace(const char* file, const char* function, int line, const char* fmt, ...) {
@@ -98,7 +98,7 @@ void Log::warn(const char* file, const char* function, int line, const char* fmt
 }
 
 void Log::error(const char* file, const char* function, int line, const char* fmt, ...) {
-    WRITE_LOG(Error);
+    WRITE_LOG(ERROR);
 }
 
 void Log::fatal(const char* file, const char* function, int line, const char* fmt, ...) {
