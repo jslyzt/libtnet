@@ -10,6 +10,8 @@ add_executable(test ${SRC_FILES})
 target_link_libraries(test
 	-ltredis
 	-ltnet
+	-lgo
+	-lgonhk
 	-lgmock
 	-lpthread
 )
