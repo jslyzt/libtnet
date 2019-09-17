@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <assert.h>
 
 #include "redisclient.h"
@@ -78,7 +77,6 @@ TEST_F(RedisTest, client) {
     RedisClientPtr_t client = std::make_shared<RedisClient>(&loop, addr);
 
     client->exec({ "SET", "key", "hello world" }, std::bind(&redis::setCallback, client, _1));
-
     client->newTrans(std::bind(&redis::onNewTrans, _1, _2));
 
     loop.start();

@@ -1,6 +1,5 @@
 #include <vector>
 #include <iostream>
-
 #include <signal.h>
 
 #include "signaler.h"

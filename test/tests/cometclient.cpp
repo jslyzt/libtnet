@@ -6,7 +6,6 @@
 #include "log.h"
 #include "timingwheel.h"
 #include "httpclient.h"
-
 #include "httprequest.h"
 #include "httpresponse.h"
 #include "ioloop.h"
@@ -49,5 +48,6 @@ TEST_F(CometTest, client) {
     }
 
     wheel->start(&loop);
+
     loop.start();
 }

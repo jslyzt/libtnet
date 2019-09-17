@@ -48,8 +48,8 @@ namespace ws {
 
 TEST_F(WSTest, client) {
     IOLoop loop;
-    WsClientPtr_t client = std::make_shared<WsClient>(&loop);
 
+    WsClientPtr_t client = std::make_shared<WsClient>(&loop);
     client->connect("ws://127.0.0.1:11181/push/ws", std::bind(&ws::onWsConnEvent, _1, _2, _3));
 
     loop.start();

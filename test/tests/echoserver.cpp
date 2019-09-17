@@ -28,7 +28,7 @@ TEST_F(EchoTest, server) {
     TcpServer s;
     s.listen(Address(11181), std::bind(&echos::onConnEvent, _1, _2, _3));
 
-    s.start(1);
+    s.start();
 
     LOG_INFO("test over");
 }

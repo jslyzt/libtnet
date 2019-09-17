@@ -59,7 +59,10 @@ void TcpServer::run() {
         return;
     }
 
-    m_loop = new IOLoop();
+    if (m_loop == nullptr) {
+        m_loop = new IOLoop();
+    }
+
     m_running = true;
     m_loop->addCallback(std::bind(&TcpServer::onRun, this));
     m_loop->start();
@@ -161,8 +164,7 @@ void TcpServer::onSignal(const SignalerPtr_t& signaler, int signum) {
         case SIGINT:
         case SIGTERM: {
             onStop();
-        }
-        break;
+        } break;
         default:
             LOG_ERROR("invalid signal %d", signum);
             break;

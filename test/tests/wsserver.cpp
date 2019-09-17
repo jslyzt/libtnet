@@ -41,9 +41,7 @@ TEST_F(WSTest, server) {
     TcpServer s;
 
     HttpServer httpd(&s);
-
     httpd.setWsCallback("/push/ws", std::bind(&ws::onWsCallback, _1, _2, _3));
-
     httpd.listen(Address(11181));
 
     s.start();

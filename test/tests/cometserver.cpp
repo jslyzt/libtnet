@@ -1,7 +1,6 @@
-#include "tnet.h"
-
 #include <stdlib.h>
 
+#include "tnet.h"
 #include "log.h"
 #include "tcpserver.h"
 #include "address.h"
@@ -62,5 +61,5 @@ TEST_F(CometTest, server) {
 
     httpd.listen(Address(11181));
 
-    s.start(8);
+    s.start();
 }

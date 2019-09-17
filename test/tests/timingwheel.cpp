@@ -1,5 +1,6 @@
 #include <iostream>
 #include <timer.h>
+
 #include "timingwheel.h"
 #include "ioloop.h"
 #include "tnet.h"
@@ -45,8 +46,9 @@ TEST_F(TimeWheelTest, test) {
     t->start(&loop);
 
     cout << "start" << endl;
-    loop.start();
 
+    loop.start();
     t->stop();
+
     cout << "end" << endl;
 }

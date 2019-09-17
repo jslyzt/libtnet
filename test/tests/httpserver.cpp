@@ -1,15 +1,11 @@
 #include <stdio.h>
 #include <string>
-
 #include <signal.h>
 
 #include "log.h"
-
 #include "address.h"
 #include "tcpserver.h"
-
 #include "connection.h"
-
 #include "httpserver.h"
 #include "httprequest.h"
 #include "httpresponse.h"
@@ -48,7 +44,7 @@ TEST_F(HttpTest, server) {
 
     LOG_INFO("start tcp server");
 
-    s.start(4);
+    s.start();
 
     LOG_INFO("stop server");
 }
