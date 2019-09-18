@@ -29,8 +29,12 @@ static IgnoreSigPipe initObj;
 const int DefaultEventsCapacity = 1024;
 const int MaxPollWaitTime = 1 * 1000;
 
-IOLoop::IOLoop() {
-    m_running = false;
+IOLoop::IOLoop()
+    : m_running(false)
+    , m_stoped(true)
+    , m_fdAddChan(50)
+    , m_fdRmvChan(50)
+    , m_sktRmvChan(50) {
     m_poller = new Poller(this);
     m_notifier = std::make_shared<Notifier>(std::bind(&IOLoop::onWake, this, _1));
     m_wheel = std::make_shared<TimingWheel>(1000, 3600);
@@ -38,54 +42,105 @@ IOLoop::IOLoop() {
 }
 
 IOLoop::~IOLoop() {
-    delete m_poller;
+    while (m_stoped == false) {
+        if (m_running == true) {
+            m_running = false;
+        }
+        co_yield;
+    }
+    if (m_poller != nullptr) {
+        delete m_poller;
+    }
     for_each(m_events.begin(), m_events.end(), default_delete<IOEvent>());
     m_delevents.clear();
 }
 
 void IOLoop::start() {
+    if (m_running == true) {
+        return;
+    }
     m_running = true;
+    m_stoped = false;
     m_notifier->start(this);
     m_wheel->start(this);
-    run();
+
+    go [this] {
+        run();
+    };
 }
 
 void IOLoop::stop() {
+    if (m_running == false) {
+        return;
+    }
     m_running = false;
     m_notifier->notify();
 }
 
 void IOLoop::run() {
-    while (m_running) {
+    IOEvent* addch;
+    int delfd;
+    while (m_running == true) {
+        while(m_fdAddChan.empty() == false) {
+            m_fdAddChan >> addch;
+            if (addch != nullptr) {
+                addHandler(addch);
+            }
+        }
+        while (m_fdRmvChan.empty() == false) {
+            m_fdRmvChan >> delfd;
+            m_delevents.push_back(delfd);
+        }
+        while (m_sktRmvChan.empty() == false) {
+            m_sktRmvChan >> delfd;
+            m_poller->remove(delfd);
+        }
         m_poller->poll(MaxPollWaitTime, m_events);
         handleCallbacks();
         checkDelEvents();
-    }
 
+        if (co_sched.maxThreadNum() <= 1) {
+            co_yield;
+        }
+    }
     LOG_TRACE("loop stop");
     m_notifier->stop();
+    m_stoped = true;
 }
 
 int IOLoop::addHandler(int fd, int events, const IOHandler_t& handler) {
-    if (m_events.size() <= fd) {
-        m_events.resize(fd + 1, 0);
-    }
-
     if (m_events[fd] != 0) {
         LOG_ERROR("add duplicate handler %d", fd);
         return -1;
     }
+    m_fdAddChan << new IOEvent(fd, events, handler);
+    return 0;
+}
 
-    if (m_poller->add(fd, events) != 0) {
+int IOLoop::addHandler(IOEvent* evt) {
+    if (evt == nullptr) {
         return -1;
     }
 
-    m_events[fd] = new IOEvent(fd, events, handler);
+    if (m_events.size() <= evt->fd) {
+        m_events.resize(evt->fd + 1, 0);
+    }
+
+    if (m_events[evt->fd] != 0) {
+        LOG_ERROR("add duplicate handler %d", evt->fd);
+        return -1;
+    }
+
+    if (m_poller->add(evt->fd, evt->events) != 0) {
+        return -1;
+    }
+
+    m_events[evt->fd] = evt;
     return 0;
 }
 
 int IOLoop::updateHandler(int fd, int events) {
-    if (m_events.size() <= fd || m_events[fd] == 0) {
+    if (m_events.size() <= fd || m_events[fd] == nullptr) {
         LOG_ERROR("invalid fd %d", fd);
         return -1;
     }
@@ -104,8 +159,12 @@ int IOLoop::removeHandler(int fd) {
         LOG_INFO("invalid fd %d", fd);
         return -1;
     }
-    m_delevents.push_back(fd);
+    m_fdRmvChan << fd;
     return 0;
+}
+
+void IOLoop::removeSocket(int fd) {
+    m_sktRmvChan << fd;
 }
 
 int IOLoop::trueRemoveHandler(int fd) {
@@ -114,7 +173,8 @@ int IOLoop::trueRemoveHandler(int fd) {
         return -1;
     }
     m_poller->remove(fd);
-    delete m_events[fd];
+    auto env = m_events[fd];
+    delete env;
     m_events[fd] = nullptr;
     return 0;
 }
@@ -126,7 +186,9 @@ void onTimerHandler(const TimerPtr_t& timer, const Callback_t& callback) {
 
 TimerPtr_t IOLoop::runAfter(int after, const Callback_t& callback) {
     TimerPtr_t timer = std::make_shared<Timer>(std::bind(&onTimerHandler, _1, callback), after, 0);
-    timer->start(this);
+    if (timer != nullptr) {
+        timer->start(this);
+    }
     return timer;
 }
 

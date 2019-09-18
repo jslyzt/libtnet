@@ -110,7 +110,6 @@ int HttpParser::onParser(Event event, const char* at, size_t length) {
         default:
             break;
     }
-
     return 0;
 }
 

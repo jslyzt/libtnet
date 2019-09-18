@@ -6,6 +6,7 @@
 #ifndef WIN32
 #include <unistd.h>
 #endif
+#include <libgo/coroutine.h>
 #include "nocopyable.h"
 
 namespace tnet {
@@ -13,8 +14,12 @@ namespace tnet {
 #define TNET_VERSION "0.1"
 
 #ifdef WIN32
-#define snprintf _snprintf
-#define strcasecmp _stricmp
+#ifndef snprintf
+# define snprintf _snprintf
+#endif
+#ifndef strcasecmp
+# define strcasecmp _stricmp
+#endif
 #endif
 
 class IOLoop;
@@ -55,8 +60,17 @@ typedef std::shared_ptr<TimingWheel> TimingWheelPtr_t;
 
 typedef std::function<void (IOLoop*, int)> IOHandler_t;
 typedef std::function<void (IOLoop*, int)> NewConnCallback_t;
-
 typedef std::function<void (IOLoop*)> ServerRunCallback_t;
+
+typedef co_chan<bool> boolChan_t;
+typedef co_chan<char> charChan_t;
+typedef co_chan<int> intChan_t;
+typedef co_chan<uint32_t> uintChan_t;
+typedef co_chan<uint64_t> uint64Chan_t;
+typedef co_chan<float> floatChan_t;
+typedef co_chan<double> doubleChan_t;
+typedef co_chan<std::string> stringChan_t;
+typedef co_chan<const char*> scharChan_t;
 
 class StackBuffer {
 public:

@@ -1,7 +1,7 @@
+#include "log_lvl.h"
 #include "tnet_test.h"
 #include "tnet.h"
 #include "log.h"
-#include "log_lvl.h"
 #include <thread>
 #include <libgo/coroutine.h>
 

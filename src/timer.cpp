@@ -28,7 +28,8 @@ const uint64_t nanoPerSeconds = 1000000000;
 const uint64_t nanoPerMilli = 1000000;
 
 Timer::Timer(const TimerHandler_t& handler, int repeat, int after)
-    : m_loop(0)
+    : m_loop(nullptr)
+    , m_fd(0)
     , m_running(false)
     , m_handler(handler)
     , m_repeated(false) {
@@ -43,7 +44,6 @@ Timer::Timer(const TimerHandler_t& handler, int repeat, int after)
 }
 
 Timer::~Timer() {
-    //LOG_TRACE("destroyed %d", m_fd);
     if (m_fd > 0) {
 #ifndef WIN32
         close(m_fd);
@@ -54,8 +54,7 @@ Timer::~Timer() {
 }
 
 void Timer::start(IOLoop* loop) {
-    //assert(m_fd > 0);
-    if (m_running) {
+    if (m_running == true) {
         LOG_WARN("timer was started");
         return;
     }
@@ -64,17 +63,24 @@ void Timer::start(IOLoop* loop) {
 
     m_loop = loop;
     m_running = true;
+
+#ifndef WIN32
     m_loop->addHandler(m_fd, TNET_READ, std::bind(&Timer::onTimer, shared_from_this(), _1, _2));
+#endif
+
 }
 
 void Timer::stop() {
-    if (!m_running) {
+    if (m_running == false) {
         LOG_WARN("timer was stopped");
         return;
     }
 
     m_running = false;
+
+#ifndef WIN32
     m_loop->removeHandler(m_fd);
+#endif
 }
 
 void Timer::reset(int repeat, int after) {
@@ -106,7 +112,6 @@ void Timer::reset(int repeat, int after) {
 }
 
 void Timer::onTimer(IOLoop* loop, int events) {
-    TimerPtr_t timer = shared_from_this();
 #ifndef WIN32
     uint64_t exp;
     auto s = read(m_fd, &exp, sizeof(uint64_t));
@@ -115,9 +120,14 @@ void Timer::onTimer(IOLoop* loop, int events) {
         return;
     }
 #endif
-    m_handler(timer);
-    if (!isRepeated()) {
-        timer->stop();
+    TimerPtr_t timer = shared_from_this();
+    if (timer != nullptr) {
+        if (m_handler != nullptr) {
+            m_handler(timer);
+        }
+        if (!isRepeated()) {
+            timer->stop();
+        }
     }
 }
 

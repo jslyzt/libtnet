@@ -26,20 +26,24 @@ namespace tnet {
 
 const int defaultIdleTimeout = 30;  // 默认无数据读写超时时间
 
-void dummyRunCallback(IOLoop*) {
-}
-
 TcpServer::TcpServer()
-    : m_loop(0) {
-    m_process = std::make_shared<Process>();
+    : m_loop(nullptr)
+    , m_process(nullptr)
+    , m_runCallback(nullptr) {
     m_running = false;
     m_maxIdleTimeout = defaultIdleTimeout;
-    m_runCallback = std::bind(&dummyRunCallback, _1);
 }
 
 TcpServer::~TcpServer() {
-    if (m_loop) {
+    if (m_loop != nullptr) {
         delete m_loop;
+        m_loop = nullptr;
+    }
+    if (m_process != nullptr) {
+        m_process = nullptr;
+    }
+    if (m_runCallback != nullptr) {
+        m_runCallback = nullptr;
     }
 }
 
@@ -54,8 +58,15 @@ int TcpServer::listen(const Address& addr, const ConnEventCallback_t& callback) 
     return 0;
 }
 
+IOLoop* TcpServer::createLoop() {
+    if (m_loop == nullptr) {
+        m_loop = new IOLoop();
+    }
+    return m_loop;
+}
+
 void TcpServer::run() {
-    if (m_running) {
+    if (m_running == true) {
         return;
     }
 
@@ -79,26 +90,30 @@ void TcpServer::onRun() {
     m_signaler->start(m_loop);
     m_idleWheel = std::make_shared<TimingWheel>(1000, 3600);
     m_idleWheel->start(m_loop);
-    m_runCallback(m_loop);
+
+    if (m_runCallback != nullptr) {
+        m_runCallback(m_loop);
+    }
 }
 
 void TcpServer::start(size_t maxProcess) {
-#ifdef WIN32
-    run();
-#else
+#ifndef WIN32
     if (maxProcess > 1) {
+        if (m_process == nullptr) {
+            m_process = std::make_shared<Process>();
+        }
         m_process->wait(maxProcess, std::bind(&TcpServer::run, this));
-    } else {
-        run();
+        return;
     }
 #endif
+     run();
 }
 
 void TcpServer::onStop() {
-    LOG_TRACE("tcp server on stop");
-    if (!m_running) {
+    if (m_running == false) {
         return;
     }
+    LOG_TRACE("tcp server on stop");
 
     m_running = false;
     m_idleWheel->stop();
@@ -113,7 +128,9 @@ void TcpServer::onStop() {
 
 void TcpServer::stop() {
     LOG_TRACE("stop server");
-    m_process->stop();
+    if (m_process != nullptr) {
+        m_process->stop();
+    }
     onStop();
 }
 
@@ -133,7 +150,7 @@ void TcpServer::onNewConnection(IOLoop* loop, int fd, const ConnEventCallback_t&
 }
 
 void TcpServer::addIdleConnCheck(ConnectionPtr_t conn, uint64_t timeout) {
-    m_idleWheel->add(std::bind(&TcpServer::onIdleConnCheck, this, _1, WeakConnectionPtr_t(conn)), timeout * 1000);
+    m_idleWheel->add(std::bind(&TcpServer::onIdleConnCheck, this, _1, WeakConnectionPtr_t(conn)), (int)(timeout * 1000));
 }
 
 void TcpServer::onIdleConnCheck(const TimingWheelPtr_t& wheel, const WeakConnectionPtr_t& conn) {

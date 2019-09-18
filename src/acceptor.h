@@ -25,7 +25,7 @@ private:
     int m_sockFd;
     int m_dummyFd;
 
-    bool m_running;
+    volatile bool m_running;
 
     NewConnCallback_t m_callback;
 };

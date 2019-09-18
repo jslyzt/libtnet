@@ -28,7 +28,7 @@ private:
 
 private:
     IOLoop* m_loop;
-    bool m_running;
+    volatile bool m_running;
     TimerPtr_t m_timer;
 
     int m_interval;

@@ -63,8 +63,6 @@ Poller::~Poller() {
 
 int Poller::add(int fd, int events) {
 #ifndef WIN32
-    assert(m_fd > 0);
-
     struct epoll_event event;
     event.data.u64 = 0;
     event.data.fd = fd;
@@ -102,9 +100,9 @@ int Poller::update(int fd, int events) {
 
 int Poller::remove(int fd) {
 #ifndef WIN32
-    assert(m_fd > 0);
-
-    epoll_ctl(m_fd, EPOLL_CTL_DEL, fd, 0);
+    if(m_fd > 0) {
+        epoll_ctl(m_fd, EPOLL_CTL_DEL, fd, 0);
+    }
 #else
     m_sockets.erase(fd);
 #endif
@@ -180,7 +178,6 @@ int Poller::poll(int timeout, const std::vector<IOEvent*>& events) {
             auto fd = *itstart;
             if (fd != 0) {
                 if (FD_ISSET(fd, &readFDSet)) {
-                    int got = TNET_READ;
                     IOEvent* io = fd < events.size() ? events[fd] : 0;
                     if (io == nullptr || io->handler == nullptr) {
                         continue;

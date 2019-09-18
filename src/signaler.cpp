@@ -35,7 +35,6 @@ Signaler::Signaler(const vector<int>& signums, const SignalHandler_t& handler)
 }
 
 Signaler::~Signaler() {
-    //LOG_INFO("destroyed %d", m_fd);
     if (m_fd > 0) {
 #ifndef WIN32
         close(m_fd);
@@ -66,7 +65,7 @@ int Signaler::createSignalFd(const std::vector<int>& signums) {
 
 void Signaler::start(IOLoop* loop) {
     if (m_fd > 0) {
-        if (m_running) {
+        if (m_running == true) {
             LOG_WARN("signaler was started");
             return;
         }
@@ -80,7 +79,7 @@ void Signaler::start(IOLoop* loop) {
 
 void Signaler::stop() {
     if (m_fd > 0) {
-        if (!m_running) {
+        if (m_running == false) {
             LOG_WARN("signaler was stopped");
             return;
         }

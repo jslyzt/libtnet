@@ -22,7 +22,7 @@ private:
 private:
     IOLoop* m_loop;
     int m_fd;
-    bool m_running;
+    volatile bool m_running;
 
     NotifierHandler_t m_handler;
 };

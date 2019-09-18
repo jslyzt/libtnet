@@ -57,18 +57,21 @@ private:
     void handleConnect();
     void updateActiveTime();
     bool disconnect();
+    void run();
 
 private:
     ConnEventCallback_t m_callback;
 
     IOLoop* m_loop;
     int m_fd;
-    int m_status;
+    volatile int m_status;
+    volatile bool m_stoped;
 
     //seconds
     uint64_t m_lastActiveTime;
     uint64_t m_IdleTimeout;
     std::string m_sendBuffer;
+    intChan_t m_eventChan;
 };
 
 }

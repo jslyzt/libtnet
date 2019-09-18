@@ -7,9 +7,6 @@ using namespace std;
 using namespace std::placeholders;
 
 namespace tnet {
-void dummyHandler(const TimingWheelPtr_t&) {
-
-}
 
 TimingWheel::TimingWheel(int interval, int maxBuckets)
     : m_loop(0)
@@ -27,7 +24,7 @@ TimingWheel::~TimingWheel() {
 }
 
 void TimingWheel::start(IOLoop* loop) {
-    if (m_running) {
+    if (m_running == true) {
         LOG_WARN("timing wheel was started");
         return;
     }
@@ -39,7 +36,7 @@ void TimingWheel::start(IOLoop* loop) {
 }
 
 void TimingWheel::stop() {
-    if (!m_running) {
+    if (m_running == false) {
         LOG_WARN("timing wheel was stopped");
         return;
     }
@@ -80,10 +77,10 @@ uint64_t TimingWheel::add(const TimingWheelHandler_t& handler, int timeout) {
     uint32_t bucket = (m_nextBucket + timeout / m_interval) % m_maxBuckets;
     uint32_t id = 0;
     if (m_ontimer == true && bucket == m_nextBucket) {
-        id = m_curbucket.size();
+        id = (uint32_t)m_curbucket.size();
         m_curbucket.push_back(handler);
     } else {
-        id = uint32_t(m_buckets[bucket].size());
+        id = (uint32_t)m_buckets[bucket].size();
         m_buckets[bucket].push_back(handler);
     }
 
@@ -101,16 +98,20 @@ uint64_t TimingWheel::update(uint64_t slot, int timeout) {
     uint32_t id = u.p[1];
 
     if (bucket > (uint32_t)m_maxBuckets) {
-        return (uint64_t) - 1;
+        return (uint64_t)(-1);
     }
 
     auto& chans = m_buckets[bucket];
     if (id >= uint32_t(chans.size())) {
-        return (uint64_t) - 1;
+        return (uint64_t)(-1);
+    }
+    auto& pcb = chans[id];
+    if (pcb == nullptr) {
+        return (uint64_t)(-1);
     }
 
-    auto&& cb = std::move(chans[id]);
-    chans[id] = std::bind(&dummyHandler, _1);
+    auto&& cb = std::move(pcb);
+    chans[id] = nullptr;
 
     return add(cb, timeout);
 }
@@ -131,7 +132,7 @@ void TimingWheel::remove(uint64_t slot) {
         return;
     }
 
-    chans[id] = std::bind(&dummyHandler, _1);
+    chans[id] = nullptr;
     return;
 }
 }

@@ -66,7 +66,7 @@ void Process::wait(size_t num, const ProcessCallback_t& callback) {
         if ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
             m_children.erase(pid);
 
-            if (!m_running) {
+            if (m_running == false) {
                 continue;
             }
 
@@ -87,6 +87,9 @@ void Process::wait(size_t num, const ProcessCallback_t& callback) {
 }
 
 void Process::stop() {
+    if (m_running == false) {
+        return;
+    }
     LOG_INFO("stop child process");
 #ifndef WIN32
     m_running = false;
