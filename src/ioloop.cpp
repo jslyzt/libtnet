@@ -99,9 +99,9 @@ void IOLoop::run() {
         handleCallbacks();
         checkDelEvents();
 
-        if (co_sched.maxThreadNum() <= 1) {
+        //if (co_sched.maxThreadNum() <= 1) {
             co_yield;
-        }
+        //}
     }
     LOG_TRACE("loop stop");
     m_notifier->stop();
