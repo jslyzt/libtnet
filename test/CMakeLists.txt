@@ -14,4 +14,5 @@ target_link_libraries(test
 	-lgonhk
 	-lgmock
 	-lpthread
+	-ldl
 )
