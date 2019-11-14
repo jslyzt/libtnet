@@ -91,6 +91,9 @@
     <ClCompile Include="..\..\src\polarssl\sha1.c">
       <Filter>ssl</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\http\httphandler.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\http\http_parser.h">
@@ -203,6 +206,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\log_lvl.h">
       <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\http\httphandler.h">
+      <Filter>http</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,7 @@
     <ClCompile Include="..\..\src\http\httpclient.cpp" />
     <ClCompile Include="..\..\src\http\httpconnection.cpp" />
     <ClCompile Include="..\..\src\http\httpconnector.cpp" />
+    <ClCompile Include="..\..\src\http\httphandler.cpp" />
     <ClCompile Include="..\..\src\http\httpparser.cpp" />
     <ClCompile Include="..\..\src\http\httprequest.cpp" />
     <ClCompile Include="..\..\src\http\httpresponse.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="..\..\src\http\httpclient.h" />
     <ClInclude Include="..\..\src\http\httpconnection.h" />
     <ClInclude Include="..\..\src\http\httpconnector.h" />
+    <ClInclude Include="..\..\src\http\httphandler.h" />
     <ClInclude Include="..\..\src\http\httpparser.h" />
     <ClInclude Include="..\..\src\http\httprequest.h" />
     <ClInclude Include="..\..\src\http\httpresponse.h" />
