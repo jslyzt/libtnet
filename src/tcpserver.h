@@ -21,6 +21,7 @@ public:
     void start(size_t maxProcess = 0);
     void stop();
 
+    IOLoop* createLoop();
     IOLoop* getLoop() { return m_loop; }
 
     void setRunCallback(const ServerRunCallback_t& callback) { m_runCallback = callback; }
@@ -51,7 +52,7 @@ private:
     size_t m_workerNum;
 
     bool m_workerProc;
-    bool m_running;
+    volatile bool m_running;
 
     ServerRunCallback_t m_runCallback;
 };

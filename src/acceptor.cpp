@@ -39,7 +39,6 @@ Acceptor::Acceptor(const NewConnCallback_t& callback)
     , m_dummyFd(createDummyFd())
     , m_running(false)
     , m_callback(callback) {
-
 }
 
 Acceptor::~Acceptor() {
@@ -62,19 +61,21 @@ int Acceptor::listen(const Address& addr) {
 
 void Acceptor::start(IOLoop* loop) {
     assert(m_sockFd > 0);
-    if (m_running) {
+    if (m_running == true) {
         LOG_WARN("acceptor was started");
         return;
     }
 
     m_loop = loop;
     m_running = true;
-    m_loop->addHandler(m_sockFd, TNET_READ, std::bind(&Acceptor::onAccept, this, _1, _2));
+
+    if (m_sockFd > 0) {
+        m_loop->addHandler(m_sockFd, TNET_READ, std::bind(&Acceptor::onAccept, this, _1, _2));
+    }
 }
 
 void Acceptor::stop() {
-    assert(m_sockFd > 0);
-    if (!m_running) {
+    if (m_running == false) {
         LOG_WARN("acceptor was stoped");
         return;
     }

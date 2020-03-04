@@ -25,12 +25,12 @@ void dummyConnEvent(ConnectionPtr_t&, ConnEvent, const void*) {
 
 const int MaxReadBuffer = 4096;
 Connection::Connection(IOLoop* loop, int fd)
-    : m_loop(loop)
+    : m_callback(nullptr)
+    , m_loop(loop)
     , m_fd(fd)
     , m_status(None)
     , m_lastActiveTime(0)
     , m_IdleTimeout(0) {
-    m_callback = std::bind(&dummyConnEvent, _1, _2, _3);
 }
 
 Connection::~Connection() {
@@ -38,7 +38,7 @@ Connection::~Connection() {
 }
 
 void Connection::clearEventCallback() {
-    m_callback = std::bind(&dummyConnEvent, _1, _2, _3);
+    m_callback = nullptr;
 }
 
 void Connection::updateActiveTime() {
@@ -58,9 +58,13 @@ void Connection::onEstablished() {
     updateActiveTime();
 
     ConnectionPtr_t conn = shared_from_this();
-    m_loop->addHandler(m_fd, TNET_READ, std::bind(&Connection::onHandler, conn, _1, _2));
+    if (m_fd > 0) {
+        m_loop->addHandler(m_fd, TNET_READ, std::bind(&Connection::onHandler, conn, _1, _2));
+    }
 
-    m_callback(conn, Conn_ListenEvent, 0);
+    if (m_callback != nullptr) {
+        m_callback(conn, Conn_ListenEvent, 0);
+    }
 }
 
 void Connection::connect(const Address& addr) {
@@ -72,16 +76,24 @@ void Connection::connect(const Address& addr) {
     int err = SockUtil::connect(m_fd, addr);
     if (err < 0) {
         ConnectionPtr_t conn = shared_from_this();
-        m_callback(conn, Conn_ConnFailEvent, 0);
+        if (m_callback != nullptr) {
+            m_callback(conn, Conn_ConnFailEvent, 0);
+        }
         return;
     } else {
         m_status = Connected;
     }
 
     updateActiveTime();
+
     ConnectionPtr_t conn = shared_from_this();
-    m_loop->addHandler(m_fd, m_status == Connected ? TNET_READ : TNET_WRITE, std::bind(&Connection::onHandler, conn, _1, _2));
-    m_callback(conn, Conn_ConnectEvent, 0);
+    if (m_fd > 0) {
+        m_loop->addHandler(m_fd, m_status == Connected ? TNET_READ : TNET_WRITE, std::bind(&Connection::onHandler, conn, _1, _2));
+    }
+
+    if (m_callback != nullptr) {
+        m_callback(conn, Conn_ConnectEvent, 0);
+    }
 }
 
 void Connection::onHandler(IOLoop* loop, int events) {
@@ -128,8 +140,11 @@ void Connection::handleConnect() {
     m_loop->updateHandler(m_fd, TNET_READ);
     updateActiveTime();
     m_status = Connected;
+
     ConnectionPtr_t conn = shared_from_this();
-    m_callback(conn, Conn_ConnectEvent, 0);
+    if (m_callback != nullptr) {
+        m_callback(conn, Conn_ConnectEvent, 0);
+    }
 }
 
 void Connection::handleRead() {
@@ -143,15 +158,17 @@ void Connection::handleRead() {
         StackBuffer b(buf, n);
         updateActiveTime();
         ConnectionPtr_t conn = shared_from_this();
-        m_callback(conn, Conn_ReadEvent, &b);
+        if (m_callback != nullptr) {
+            m_callback(conn, Conn_ReadEvent, &b);
+        }
         return;
     } else if (n == 0) {
         handleClose();
         return;
     } else {
         int err = errno;
-        if (err == EAGAIN || err == EWOULDBLOCK) { //try write later, can enter here?
-            LOG_INFO("read %s", errorMsg(err));
+        LOG_ERROR("read socket %d error %d => %s", m_fd, err, errorMsg(err));
+        if (err == EAGAIN || err == EWOULDBLOCK) {
             return;
         }
         handleError();
@@ -192,8 +209,10 @@ void Connection::handleWrite(const string& data) {
 #endif
     if (n == totalSize) {
         string().swap(m_sendBuffer);
-        ConnectionPtr_t conn = shared_from_this();
-        m_callback(conn, Conn_WriteCompleteEvent, 0);
+        if (m_callback != nullptr) {
+            ConnectionPtr_t conn = shared_from_this();
+            m_callback(conn, Conn_WriteCompleteEvent, 0);
+        }
         m_loop->updateHandler(m_fd, TNET_READ);
         updateActiveTime();
         return;
@@ -231,6 +250,7 @@ bool Connection::disconnect() {
     m_status = Disconnected;
     m_loop->removeHandler(m_fd);
 
+    LOG_INFO("connect %d closed", m_fd);
 #ifdef WIN32
     closesocket(m_fd);
 #else
@@ -242,13 +262,17 @@ bool Connection::disconnect() {
 void Connection::handleError() {
     disconnect();
     ConnectionPtr_t conn = shared_from_this();
-    m_callback(conn, Conn_ErrorEvent, 0);
+    if (m_callback != nullptr) {
+        m_callback(conn, Conn_ErrorEvent, 0);
+    }
 }
 
 void Connection::handleClose() {
     if (disconnect()) {
         ConnectionPtr_t conn = shared_from_this();
-        m_callback(conn, Conn_CloseEvent, 0);
+        if (m_callback != nullptr) {
+            m_callback(conn, Conn_CloseEvent, 0);
+        }
     }
 }
 

@@ -29,8 +29,8 @@ static IgnoreSigPipe initObj;
 const int DefaultEventsCapacity = 1024;
 const int MaxPollWaitTime = 1 * 1000;
 
-IOLoop::IOLoop() {
-    m_running = false;
+IOLoop::IOLoop()
+    : m_running(false) {
     m_poller = new Poller(this);
     m_notifier = std::make_shared<Notifier>(std::bind(&IOLoop::onWake, this, _1));
     m_wheel = std::make_shared<TimingWheel>(1000, 3600);
@@ -38,12 +38,17 @@ IOLoop::IOLoop() {
 }
 
 IOLoop::~IOLoop() {
-    delete m_poller;
+    if (m_poller != nullptr) {
+        delete m_poller;
+    }
     for_each(m_events.begin(), m_events.end(), default_delete<IOEvent>());
     m_delevents.clear();
 }
 
 void IOLoop::start() {
+    if (m_running == true) {
+        return;
+    }
     m_running = true;
     m_notifier->start(this);
     m_wheel->start(this);
@@ -51,6 +56,9 @@ void IOLoop::start() {
 }
 
 void IOLoop::stop() {
+    if (m_running == false) {
+        return;
+    }
     m_running = false;
     m_notifier->notify();
 }
@@ -85,7 +93,7 @@ int IOLoop::addHandler(int fd, int events, const IOHandler_t& handler) {
 }
 
 int IOLoop::updateHandler(int fd, int events) {
-    if (m_events.size() <= fd || m_events[fd] == 0) {
+    if (m_events.size() <= fd || m_events[fd] == nullptr) {
         LOG_ERROR("invalid fd %d", fd);
         return -1;
     }
@@ -114,7 +122,8 @@ int IOLoop::trueRemoveHandler(int fd) {
         return -1;
     }
     m_poller->remove(fd);
-    delete m_events[fd];
+    auto env = m_events[fd];
+    delete env;
     m_events[fd] = nullptr;
     return 0;
 }
@@ -126,7 +135,9 @@ void onTimerHandler(const TimerPtr_t& timer, const Callback_t& callback) {
 
 TimerPtr_t IOLoop::runAfter(int after, const Callback_t& callback) {
     TimerPtr_t timer = std::make_shared<Timer>(std::bind(&onTimerHandler, _1, callback), after, 0);
-    timer->start(this);
+    if (timer != nullptr) {
+        timer->start(this);
+    }
     return timer;
 }
 

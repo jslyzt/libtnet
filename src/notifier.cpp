@@ -25,7 +25,6 @@ Notifier::Notifier(const NotifierHandler_t& handler)
 }
 
 Notifier::~Notifier() {
-    //LOG_INFO("destroyed %d", m_fd);
 #ifndef WIN32
     if (m_fd > 0) {
         close(m_fd);
@@ -34,7 +33,7 @@ Notifier::~Notifier() {
 }
 
 void Notifier::start(IOLoop* loop) {
-    if (m_running) {
+    if (m_running == true) {
         LOG_WARN("event was started");
         return;
     }
@@ -47,7 +46,7 @@ void Notifier::start(IOLoop* loop) {
 }
 
 void Notifier::stop() {
-    if (!m_running) {
+    if (m_running == false) {
         LOG_WARN("event was stopped");
         return;
     }

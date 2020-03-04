@@ -63,7 +63,7 @@ private:
 
     IOLoop* m_loop;
     int m_fd;
-    int m_status;
+    volatile int m_status;
 
     //seconds
     uint64_t m_lastActiveTime;

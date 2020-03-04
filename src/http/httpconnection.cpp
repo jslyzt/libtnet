@@ -12,19 +12,15 @@ namespace tnet {
 size_t HttpConnection::ms_maxHeaderSize = 80 * 1024;
 size_t HttpConnection::ms_maxBodySize = 10 * 1024 * 1024;
 
-static void dummyCallback()
-{}
-
 HttpConnection::HttpConnection(const ConnectionPtr_t& conn, const RequestCallback_t& callback)
     : HttpParser(HTTP_REQUEST)
     , m_conn(conn)
-    , m_callback(callback) {
+    , m_callback(callback)
+    , m_sendCallback(nullptr) {
     m_fd = conn->getSockFd();
-    m_sendCallback = std::bind(&dummyCallback);
 }
 
 HttpConnection::~HttpConnection() {
-    //LOG_INFO("httpconnection destroyed");
 }
 
 void HttpConnection::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const void* context) {
@@ -35,8 +31,10 @@ void HttpConnection::onConnEvent(ConnectionPtr_t& conn, ConnEvent event, const v
             execute(buf->buffer, buf->count);
         } break;
         case Conn_WriteCompleteEvent: {
-            m_sendCallback();
-            m_sendCallback = std::bind(&dummyCallback);
+            if (m_sendCallback != nullptr) {
+                m_sendCallback();
+                m_sendCallback = nullptr;
+            }
         } break;
         default:
             break;

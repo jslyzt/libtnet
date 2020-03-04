@@ -36,7 +36,7 @@ private:
 private:
     IOLoop* m_loop;
     int m_fd;
-    bool m_running;
+    volatile bool m_running;
     bool m_repeated;
 
     TimerHandler_t m_handler;

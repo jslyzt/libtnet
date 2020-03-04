@@ -9,13 +9,13 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 set(LFT_YUN_LIBS $ENV{LFT_YUN_LIBS})
 
 include_directories(
-	${LFT_YUN_LIBS}/l-include
-	${LFT_YUN_LIBS}/include
 	${PROJECT_SOURCE_DIR}/src
 	${PROJECT_SOURCE_DIR}/src/http
 	${PROJECT_SOURCE_DIR}/src/polarssl
 	${PROJECT_SOURCE_DIR}/src/redis
 	${PROJECT_SOURCE_DIR}/test
+	${LFT_YUN_LIBS}/l-include
+	${LFT_YUN_LIBS}/include
 )
 
 link_directories(

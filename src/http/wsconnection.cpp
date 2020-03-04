@@ -44,7 +44,6 @@ WsConnection::WsConnection(const ConnectionPtr_t& conn, const WsCallback_t& call
 }
 
 WsConnection::~WsConnection() {
-    //LOG_INFO("wsconnection destroyed");
 }
 
 void WsConnection::onOpen(const void* context) {

@@ -10,6 +10,7 @@
 #include "httprequest.h"
 #include "httpresponse.h"
 #include "httpconnection.h"
+#include "httphandler.h"
 #include "../tnet_test.h"
 
 using namespace std;
@@ -32,11 +33,17 @@ namespace http {
     }
 }
 
+HANDLEDEFINE(test, "test") {
+    conn->send(200, std::string("test"));
+}
+
 
 TEST_F(HttpTest, server) {
     TcpServer s;
 
     HttpServer httpd(&s);
+
+    tnet::registHandl(httpd);
 
     httpd.setHttpCallback("/abc", std::bind(&http::onHandler, _1, _2));
 

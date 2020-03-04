@@ -42,7 +42,7 @@ static const char* LevelMsg[] = {"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FAT
         va_start(ap, fmt);\
         vsnprintf(msg, sizeof(msg), fmt, ap);\
         va_end(ap);\
-        log(LevelMsg[int(level)], file, function, line, msg);\
+        log(LevelMsg[level], file, function, line, msg);\
     }
 
 static const char* DateTimeFormat = "%Y-%m-%d %H:%M:%S";

@@ -45,15 +45,20 @@ int base64_encode(unsigned char* dst, size_t* dlen,
     int C1, C2, C3;
     unsigned char* p;
 
-    if (slen == 0)
+    if (slen == 0) {
         return (0);
-
+    }
     n = (slen << 3) / 6;
 
     switch ((slen << 3) - (n * 6)) {
-        case  2: n += 3; break;
-        case  4: n += 2; break;
-        default: break;
+        case 2: {
+            n += 3;
+        } break;
+        case 4: {
+            n += 2;
+        } break;
+        default:
+            break;
     }
 
     if (*dlen < n + 1) {
@@ -81,10 +86,11 @@ int base64_encode(unsigned char* dst, size_t* dlen,
         *p++ = base64_enc_map[(C1 >> 2) & 0x3F];
         *p++ = base64_enc_map[(((C1 & 3) << 4) + (C2 >> 4)) & 0x3F];
 
-        if ((i + 1) < slen)
+        if ((i + 1) < slen) {
             *p++ = base64_enc_map[((C2 & 15) << 2) & 0x3F];
-        else *p++ = '=';
-
+        } else {
+            *p++ = '=';
+        }
         *p++ = '=';
     }
 
@@ -99,33 +105,31 @@ int base64_encode(unsigned char* dst, size_t* dlen,
  */
 int base64_decode(unsigned char* dst, size_t* dlen,
                   const unsigned char* src, size_t slen) {
-    size_t i, n;
-    uint32_t j, x;
+    size_t i, n, j, x;
     unsigned char* p;
 
     for (i = j = n = 0; i < slen; i++) {
-        if ((slen - i) >= 2 &&
-                src[i] == '\r' && src[i + 1] == '\n')
+        if ((slen - i) >= 2 && src[i] == '\r' && src[i + 1] == '\n') {
             continue;
-
-        if (src[i] == '\n')
+        }
+        if (src[i] == '\n') {
             continue;
-
-        if (src[i] == '=' && ++j > 2)
+        }
+        if (src[i] == '=' && ++j > 2) {
             return (POLARSSL_ERR_BASE64_INVALID_CHARACTER);
-
-        if (src[i] > 127 || base64_dec_map[src[i]] == 127)
+        }
+        if (src[i] > 127 || base64_dec_map[src[i]] == 127) {
             return (POLARSSL_ERR_BASE64_INVALID_CHARACTER);
-
-        if (base64_dec_map[src[i]] < 64 && j != 0)
+        }
+        if (base64_dec_map[src[i]] < 64 && j != 0) {
             return (POLARSSL_ERR_BASE64_INVALID_CHARACTER);
-
+        }
         n++;
     }
 
-    if (n == 0)
+    if (n == 0) {
         return (0);
-
+    }
     n = ((n * 6) + 7) >> 3;
 
     if (*dlen < n) {
@@ -134,22 +138,27 @@ int base64_decode(unsigned char* dst, size_t* dlen,
     }
 
     for (j = 3, n = x = 0, p = dst; i > 0; i--, src++) {
-        if (*src == '\r' || *src == '\n')
+        if (*src == '\r' || *src == '\n') {
             continue;
-
+        }
         j -= (base64_dec_map[*src] == 64);
         x  = (x << 6) | (base64_dec_map[*src] & 0x3F);
 
         if (++n == 4) {
             n = 0;
-            if (j > 0) *p++ = (unsigned char)(x >> 16);
-            if (j > 1) *p++ = (unsigned char)(x >>  8);
-            if (j > 2) *p++ = (unsigned char)(x);
+            if (j > 0) {
+                *p++ = (unsigned char)(x >> 16);
+            }
+            if (j > 1) {
+                *p++ = (unsigned char)(x >> 8);
+            }
+            if (j > 2) {
+                *p++ = (unsigned char)(x);
+            }
         }
     }
 
     *dlen = p - dst;
-
     return (0);
 }
 
@@ -180,37 +189,37 @@ int base64_self_test(int verbose) {
     size_t len;
     unsigned char* src, buffer[128];
 
-    if (verbose != 0)
-        printf("  Base64 encoding test: ");
-
+    if (verbose != 0) {
+        printf("Base64 encoding test:");
+    }
     len = sizeof(buffer);
     src = (unsigned char*) base64_test_dec;
 
     if (base64_encode(buffer, &len, src, 64) != 0 ||
             memcmp(base64_test_enc, buffer, 88) != 0) {
-        if (verbose != 0)
+        if (verbose != 0) {
             printf("failed\n");
-
+        }
         return (1);
     }
 
-    if (verbose != 0)
+    if (verbose != 0) {
         printf("passed\n  Base64 decoding test: ");
-
+    }
     len = sizeof(buffer);
     src = (unsigned char*) base64_test_enc;
 
     if (base64_decode(buffer, &len, src, 88) != 0 ||
             memcmp(base64_test_dec, buffer, 64) != 0) {
-        if (verbose != 0)
+        if (verbose != 0) {
             printf("failed\n");
-
+        }
         return (1);
     }
 
-    if (verbose != 0)
+    if (verbose != 0) {
         printf("passed\n\n");
-
+    }
     return (0);
 }
 

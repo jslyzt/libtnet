@@ -32,7 +32,7 @@ private:
 
 private:
     pid_t m_main;
-    bool m_running;
+    volatile bool m_running;
     std::set<pid_t> m_children;
 
     int m_fd;

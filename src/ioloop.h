@@ -29,10 +29,9 @@ public:
     void addCallback(const Callback_t& callback);
 
     //timeout is milliseconds
-    //wheel max timeout is 3600 * 1000
-    //wheel interval is 1000
     void runInWheel(int timeout, const TimingWheelHandler_t& handler);
 
+    bool isRunning() { return m_running; }
 private:
     void run();
 
@@ -44,7 +43,7 @@ private:
 private:
     int m_pollFd;
 
-    bool m_running;
+    volatile bool m_running;
 
     std::vector<IOEvent*> m_events;
     std::vector<int> m_delevents;
